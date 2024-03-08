@@ -1,21 +1,34 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Switch, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import ClubIcon from '../assets/ClubIcon.png';
 
 const CheckoutScreen = () => {
   const [isDelivery, setIsDelivery] = useState(true);
+  const [isItemExpanded, setIsItemExpanded] = useState(false);
+  const [isSwitchEnabled, setIsSwitchEnabled] = useState(false); // Initialize to false or true as per your default
+
 
   const toggleDeliveryOption = () => {
     setIsDelivery(!isDelivery);
   };
 
-  return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerText}>Checkout</Text>
-      </View>
+  const toggleItemSection = () => {
+    setIsItemExpanded(!isItemExpanded);
+  };
 
-      <View style={styles.deliveryOptions}>
+  return (
+    <KeyboardAvoidingView
+      style={[styles.container, { backgroundColor: '#B6D7A8' }]} // Set background color to match header
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={100}
+    >
+      <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+        <View style={styles.header}>
+          <Text style={[styles.headerText, { fontSize: 24, fontWeight: 'bold', marginTop: 40 }]}>Checkout</Text>
+        </View>
+
+      <View style={[styles.deliveryOptions, { backgroundColor: '#CBEEBC' }]}>
         <TouchableOpacity
           style={[
             styles.deliveryButton,
@@ -49,8 +62,7 @@ const CheckoutScreen = () => {
           </Text>
         </TouchableOpacity>
       </View>
-
-      <TouchableOpacity style={styles.addressSection}>
+      <TouchableOpacity style={[styles.addressSection, { backgroundColor: '#CBEEBC' }]}>
         <View style={styles.addressRow}>
           <Icon name="home" size={24} color="#757575" />
           <Text style={styles.sectionTitle}>Delivery address</Text>
@@ -62,7 +74,7 @@ const CheckoutScreen = () => {
         <Text>12345 City, BIN</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.timeSection}>
+      <TouchableOpacity style={[styles.timeSection, { backgroundColor: '#CBEEBC' }]}>
         <View style={styles.addressRow}>
           <Icon name="access-time" size={24} color="#757575" />
           <Text style={styles.sectionTitle}>Deliver Time</Text>
@@ -70,40 +82,60 @@ const CheckoutScreen = () => {
         </View>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.paymentSection}>
+      <TouchableOpacity style={[styles.paymentSection, { backgroundColor: '#CBEEBC' }]}>
         <View style={styles.addressRow}>
           <Icon name="payment" size={24} color="#757575" />
           <Text style={styles.sectionTitle}>Payment Details</Text>
           <Icon name="chevron-right" size={24} color="#757575" />
         </View>
       </TouchableOpacity>
+      <Text style={styles.ItemsectionTitle}>Your Items</Text>
+      <TouchableOpacity style={[styles.itemSection, { backgroundColor: '#CBEEBC' }]} onPress={toggleItemSection}>
+  <View style={styles.cardHeader}>
+  <Image source={ClubIcon} style={styles.leftIcon}/>
+    <Text style={styles.cardHeaderText}>Social Club's Name</Text>
+  </View>
+  <Text style={styles.ItemCount} >1 item</Text>
+  <TouchableOpacity style={styles.iconPosition} onPress={toggleItemSection}>
+    <Icon name={isItemExpanded ? 'expand-less' : 'expand-more'} size={24} color="#757575" />
+  </TouchableOpacity>
+  {isItemExpanded && (
+    <>
+      <Text>nothing yet</Text>
+    </>
+  )}
+</TouchableOpacity>
 
-      <TouchableOpacity style={styles.itemSection}>
-        <View style={styles.addressRow}>
-          <Text style={styles.sectionTitle}>Your Items</Text>
-          <Icon name="expand-more" size={24} color="#757575" />
-        </View>
-        <Text>Social Club's Name</Text>
-        <Text>1 item</Text>
-      </TouchableOpacity>
 
-      <TouchableOpacity style={styles.discountSection}>
+      <TouchableOpacity style={[styles.discountSection, { backgroundColor: '#CBEEBC' }]}>
         <Icon name="add" size={24} color="#757575" />
         <Text style={styles.sectionTitle}>Add Discount Code</Text>
       </TouchableOpacity>
 
-      <View style={styles.subtotalsSection}>
-        <Text style={styles.subtotalText}>Subtotal</Text>
-        <Text style={styles.subtotalText}>0.00$</Text>
-        </View>
-        <View style={styles.totalsSection}>
-        <Text style={styles.totalText}>Total</Text>
-        <Text style={styles.totalText}>0.00$</Text>
+      <View style={[styles.subtotalsSection]}>
+        <Text style={[styles.subtotalText, { textAlign: 'left' }]}>Subtotal</Text>
+        <Text style={[styles.subtotalText, { textAlign: 'right' }]}>0.00$</Text>
+      </View>
+      <View style={[styles.DeliveryFeeSection]}>
+        <Text style={[styles.subtotalText, { textAlign: 'left' }]}>Delivery Fee</Text>
+        <Text style={[styles.subtotalText, { textAlign: 'right' }]}>0.00$</Text>
+      </View>
+      <View style={[styles.totalsSection]}>
+        <Text style={[styles.totalText, { textAlign: 'right' }]}>Total</Text>
+        <Text style={[styles.totalText, { textAlign: 'right' }]}>0.00$</Text>
       </View>
 
-      <Text style={styles.disclaimerText}>
-        Promo discount codes, and store policies
-      </Text>
+      <View style={styles.disclaimerRow}>
+  <Text style={styles.disclaimerText}>
+    Receive discount codes, and other updates
+  </Text>
+  <Switch
+    value={isSwitchEnabled} // Boolean state to control the switch
+    onValueChange={(newValue) => setIsSwitchEnabled(newValue)} // Handler to toggle the state
+  />
+</View>
+
+      <View style={styles.dividerLine}></View>
       <Text style={styles.disclaimerText}>
         Disclaimer text. Disclaimer text. Disclaimer text. Disclaimer
         text. Disclaimer text. Disclaimer text. Disclaimer text.
@@ -115,18 +147,26 @@ const CheckoutScreen = () => {
         text. Disclaimer text. Disclaimer text.
       </Text>
 
-      <TouchableOpacity style={styles.orderButton}>
-        <Text style={styles.orderButtonText}>Order and Pay 0.00$</Text>
-      </TouchableOpacity>
-    </ScrollView>
+      </ScrollView>
+
+      <View style={[styles.orderButtonContainer, { backgroundColor: 'transparent', position: 'absolute', bottom: 0, left: 0, right: 0 }]}>
+        <TouchableOpacity style={styles.orderButton}>
+          <Text style={styles.orderButtonText}>Order and Pay 0.00$</Text>
+        </TouchableOpacity>
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
+    flex: 1,
     backgroundColor: '#F0F0F0',
+  },
+  scrollViewContainer: {
+    flexGrow: 1,
     padding: 16,
+    paddingBottom: 80,
   },
   header: {
     backgroundColor: '#B6D7A8',
@@ -136,6 +176,7 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 18,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   deliveryOptions: {
     flexDirection: 'row',
@@ -191,7 +232,7 @@ const styles = StyleSheet.create({
   },
   itemSection: {
     backgroundColor: '#FFFFFF',
-    padding: 16,
+    padding: 10,
     marginBottom: 16,
     borderRadius: 4,
   },
@@ -206,27 +247,42 @@ const styles = StyleSheet.create({
   subtotalsSection: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: '#FFFFFF',
-    padding: 16,
-    marginBottom: 16,
-    borderRadius: 4,
+  },
+  DeliveryFeeSection: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   totalsSection: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: '#FFFFFF',
-    padding: 16,
-    marginBottom: 16,
-    borderRadius: 4,
   },
+  
   subtotalText: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
+  },
+  DeliveryFeeText: {
+    fontSize: 16,
+    fontWeight: "bold",
   },
   totalText: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#6FCF97',
+    fontWeight: "bold",
+    color: "#6FCF97",
+    marginBottom: 10,
+  },
+  orderButtonContainer: {
+    position : 'absolute',
+    padding: 16,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2, // Adjusting shadow offset for more pronounced effect
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84, // Increased radius for a softer, more pronounced shadow
+    elevation: 5,
+    backgroundColor: 'transparent', // Set container background to transparent
   },
   orderButton: {
     backgroundColor: '#000000',
@@ -244,11 +300,50 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginLeft: 8,
   },
+  ItemsectionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginLeft: 8,
+    marginBottom: 10,
+  },
   disclaimerText: {
     fontSize: 14,
     color: '#757575',
-    marginBottom: 8,
   },
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  leftIcon: {
+    marginRight: 8, // Adds some space between the icon and the text
+  },
+  cardHeaderText: {
+    flex: 1, // Allows the text to fill the space, pushing the icon to the right
+  },
+  ItemCount: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginLeft : 48,
+  },
+  iconPosition: {
+    position: 'absolute',
+    right: 10, // Adjust according to your layout
+    top: 10, // Adjust according to your layout
+  },
+  dividerLine: {
+    borderBottomColor: '#757575', // Choose color that fits your design
+    borderBottomWidth: 1, // Adjust the thickness of the line
+    marginVertical: 8, // Adjust spacing above and below the line
+  },
+  disclaimerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between', // Aligns children to start and end of container
+    alignItems: 'center', // Centers items vertically in the row
+  },
+  
+  
 });
 
 export default CheckoutScreen;

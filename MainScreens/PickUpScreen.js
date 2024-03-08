@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Switch, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import ClubIcon from './assets/ClubIcon.png';
+import ClubIcon from '../assets/ClubIcon.png';
 
 const PickUpScreen = () => {
-  const [isDelivery, setIsDelivery] = useState(false);
+  const [isDelivery, setIsDelivery] = useState(true);
   const [isItemExpanded, setIsItemExpanded] = useState(false);
   const [isSwitchEnabled, setIsSwitchEnabled] = useState(false); // Initialize to false or true as per your default
 
@@ -62,17 +62,23 @@ const PickUpScreen = () => {
           </Text>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity style={[styles.TempContainer, { backgroundColor: '#CBEEBC' }]}>
-        <Text style={{ textAlign: 'center' }}>Google Maps</Text>
+      <TouchableOpacity style={[styles.addressSection, { backgroundColor: '#CBEEBC' }]}>
+        <View style={styles.addressRow}>
+          <Icon name="home" size={24} color="#757575" />
+          <Text style={styles.sectionTitle}>Delivery address</Text>
+          <Icon name="chevron-right" size={24} color="#757575" />
+        </View>
+        <Text>Name Name</Text>
+        <Text>+1023456789</Text>
+        <Text>Address Details, Address Details...</Text>
+        <Text>12345 City, BIN</Text>
       </TouchableOpacity>
+
       <TouchableOpacity style={[styles.timeSection, { backgroundColor: '#CBEEBC' }]}>
         <View style={styles.addressRow}>
           <Icon name="access-time" size={24} color="#757575" />
-          <Text style={styles.sectionTitle}>Social Club's Name</Text>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Text style={styles.addressText}>Address 11</Text>
-            <Icon name="chevron-right" size={24} color="#757575" />
-          </View>
+          <Text style={styles.sectionTitle}>Deliver Time</Text>
+          <Icon name="chevron-right" size={24} color="#757575" />
         </View>
       </TouchableOpacity>
 
@@ -201,9 +207,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  TempContainer: {
+  addressSection: {
     backgroundColor: '#FFFFFF',
-    padding: 68,
+    padding: 16,
     marginBottom: 16,
     borderRadius: 4,
   },

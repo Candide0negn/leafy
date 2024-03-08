@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Switch, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ClubIcon from '../assets/ClubIcon.png';
+import { useNavigation } from '@react-navigation/native';
 
 const CheckoutScreen = () => {
+  const navigation = useNavigation();
   const [isDelivery, setIsDelivery] = useState(true);
   const [isItemExpanded, setIsItemExpanded] = useState(false);
-  const [isSwitchEnabled, setIsSwitchEnabled] = useState(false); // Initialize to false or true as per your default
-
+  const [isSwitchEnabled, setIsSwitchEnabled] = useState(false);
 
   const toggleDeliveryOption = () => {
     setIsDelivery(!isDelivery);
@@ -15,6 +16,10 @@ const CheckoutScreen = () => {
 
   const toggleItemSection = () => {
     setIsItemExpanded(!isItemExpanded);
+  };
+
+  const handlePickUpPress = () => {
+    navigation.navigate('PickUp');
   };
 
   return (
@@ -28,40 +33,40 @@ const CheckoutScreen = () => {
           <Text style={[styles.headerText, { fontSize: 24, fontWeight: 'bold', marginTop: 40 }]}>Checkout</Text>
         </View>
 
-      <View style={[styles.deliveryOptions, { backgroundColor: '#CBEEBC' }]}>
-        <TouchableOpacity
+        <View style={[styles.deliveryOptions, { backgroundColor: '#CBEEBC' }]}>
+      <TouchableOpacity
+        style={[
+          styles.deliveryButton,
+          isDelivery ? styles.activeButton : styles.inactiveButton,
+        ]}
+        onPress={toggleDeliveryOption}
+      >
+        <Text
           style={[
-            styles.deliveryButton,
-            isDelivery ? styles.activeButton : styles.inactiveButton,
+            styles.deliveryButtonText,
+            isDelivery ? styles.activeButtonText : styles.inactiveButtonText,
           ]}
-          onPress={toggleDeliveryOption}
         >
-          <Text
-            style={[
-              styles.deliveryButtonText,
-              isDelivery ? styles.activeButtonText : styles.inactiveButtonText,
-            ]}
-          >
-            Delivery
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
+          Delivery
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={[
+          styles.deliveryButton,
+          !isDelivery ? styles.activeButton : styles.inactiveButton,
+        ]}
+        onPress={handlePickUpPress}
+      >
+        <Text
           style={[
-            styles.deliveryButton,
-            !isDelivery ? styles.activeButton : styles.inactiveButton,
+            styles.deliveryButtonText,
+            !isDelivery ? styles.activeButtonText : styles.inactiveButtonText,
           ]}
-          onPress={toggleDeliveryOption}
         >
-          <Text
-            style={[
-              styles.deliveryButtonText,
-              !isDelivery ? styles.activeButtonText : styles.inactiveButtonText,
-            ]}
-          >
-            Pick-up
-          </Text>
-        </TouchableOpacity>
-      </View>
+          Pick-up
+        </Text>
+      </TouchableOpacity>
+    </View>
       <TouchableOpacity style={[styles.addressSection, { backgroundColor: '#CBEEBC' }]}>
         <View style={styles.addressRow}>
           <Icon name="home" size={24} color="#757575" />

@@ -25,9 +25,6 @@ const AddressFormScreen = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerText}>Address</Text>
-      </View>
       <Text style={styles.formTitle}>Fill in the form</Text>
       <View style={styles.form}>
         <TextInput
@@ -84,23 +81,15 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
     paddingHorizontal: 20,
   },
-  header: {
-    marginTop: 30,
-    alignItems: "center",
-  },
-  headerText: {
-    fontSize: 24,
-    color: "#000",
-    fontWeight: "800",
-  },
   form: {
     flex: 1,
   },
   formTitle: {
-    fontSize: 16,
+    fontSize: 18,
     color: "#000",
-    marginVertical: 45,
+    marginBottom: 45,
     fontWeight: "700",
+    opacity: 0.7,
   },
   input: {
     backgroundColor: "#fff",
@@ -124,7 +113,7 @@ const styles = StyleSheet.create({
   saveButton: {
     backgroundColor: "black",
     borderRadius: 50,
-    paddingVertical: 20,
+    paddingVertical: 16,
     alignItems: "center",
     marginBottom: 50,
   },

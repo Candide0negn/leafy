@@ -10,7 +10,7 @@ import {
   StatusBar,
 } from "react-native";
 import { Ionicons, MaterialIcons, Entypo } from "@expo/vector-icons";
-const AddressScreen = () => {
+const AddressScreen = ({ navigation }) => {
   const addresses = [
     {
       id: "1",
@@ -50,7 +50,9 @@ const AddressScreen = () => {
       </View>
     </View>
   );
-
+  const handleNewAddressPressed = () => {
+    navigation.navigate("AddressForm");
+  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -58,9 +60,7 @@ const AddressScreen = () => {
       </View>
       <View style={styles.deliveryAddress}>
         <Text style={styles.addressTitle}>Delivery address</Text>
-        <TouchableOpacity
-          style={[styles.currentAddressButton]}
-        >
+        <TouchableOpacity style={[styles.currentAddressButton]}>
           <View style={{ flex: 1 }}>
             <Text style={styles.currentAddressTitle}>Current Address</Text>
             <Text style={styles.currentAddressText}>
@@ -73,6 +73,7 @@ const AddressScreen = () => {
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.currentAddressButton, { elevation: 10 }]}
+          onPress={handleNewAddressPressed}
         >
           <View style={{ flex: 1 }}>
             <Text style={styles.currentAddressTitle}>New Address?</Text>

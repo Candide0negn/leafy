@@ -1,21 +1,32 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Switch, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { Feather } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
 import ClubIcon from '../assets/ClubIcon.png';
+import { useNavigation } from '@react-navigation/native';
+import PickUpDetails from '../Components/PickUpDetails';
 
 const PickUpScreen = () => {
-  const [isDelivery, setIsDelivery] = useState(true);
-  const [isItemExpanded, setIsItemExpanded] = useState(false);
-  const [isSwitchEnabled, setIsSwitchEnabled] = useState(false); // Initialize to false or true as per your default
-
-
-  const toggleDeliveryOption = () => {
-    setIsDelivery(!isDelivery);
-  };
-
-  const toggleItemSection = () => {
-    setIsItemExpanded(!isItemExpanded);
-  };
+    const navigation = useNavigation();
+    const [isDelivery, setIsDelivery] = useState(false);
+    const [isItemExpanded, setIsItemExpanded] = useState(false);
+    const [isSwitchEnabled, setIsSwitchEnabled] = useState(false);
+  
+    const toggleDeliveryOption = () => {
+      setIsDelivery(!isDelivery);
+      if (isDelivery) {
+        navigation.navigate('Checkout');
+      }
+    };
+  
+    const toggleItemSection = () => {
+      setIsItemExpanded(!isItemExpanded);
+    };
+  
+    const handleCheckOutPress = () => {
+      navigation.navigate('Checkout');
+    };
 
   return (
     <KeyboardAvoidingView
@@ -34,7 +45,7 @@ const PickUpScreen = () => {
             styles.deliveryButton,
             isDelivery ? styles.activeButton : styles.inactiveButton,
           ]}
-          onPress={toggleDeliveryOption}
+          onPress={handleCheckOutPress}
         >
           <Text
             style={[
@@ -62,26 +73,27 @@ const PickUpScreen = () => {
           </Text>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity style={[styles.addressSection, { backgroundColor: '#CBEEBC' }]}>
-        <View style={styles.addressRow}>
-          <Icon name="home" size={24} color="#757575" />
-          <Text style={styles.sectionTitle}>Delivery address</Text>
-          <Icon name="chevron-right" size={24} color="#757575" />
-        </View>
-        <Text>Name Name</Text>
-        <Text>+1023456789</Text>
-        <Text>Address Details, Address Details...</Text>
-        <Text>12345 City, BIN</Text>
+      {!isDelivery && <PickUpDetails />}
+      <TouchableOpacity style={[styles.TempContainer, { backgroundColor: '#CBEEBC' }]}>
+        <Text style={{ textAlign: 'center' }}>Google Maps</Text>
       </TouchableOpacity>
-
-      <TouchableOpacity style={[styles.timeSection, { backgroundColor: '#CBEEBC' }]}>
+      <TouchableOpacity style={[styles.ClubAddressSection, { backgroundColor: '#CBEEBC' }]}>
         <View style={styles.addressRow}>
-          <Icon name="access-time" size={24} color="#757575" />
-          <Text style={styles.sectionTitle}>Deliver Time</Text>
-          <Icon name="chevron-right" size={24} color="#757575" />
+          <FontAwesome5 name="store-alt" size={24} color="black" />
+          <Text style={styles.sectionTitle}>Social Club's Name</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Icon name="chevron-right" size={24} color="#757575" />
+          </View>
         </View>
       </TouchableOpacity>
 
+      <TouchableOpacity style={[styles.paymentSection, { backgroundColor: '#CBEEBC' }]}>
+        <View style={styles.addressRow}>
+          <Feather name="package" size={24} color="black" />
+          <Text style={styles.sectionTitle}>Pick Up Time</Text>
+          <Icon name="chevron-right" size={24} color="#757575" />
+        </View>
+      </TouchableOpacity>
       <TouchableOpacity style={[styles.paymentSection, { backgroundColor: '#CBEEBC' }]}>
         <View style={styles.addressRow}>
           <Icon name="payment" size={24} color="#757575" />
@@ -207,9 +219,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  addressSection: {
+  TempContainer: {
     backgroundColor: '#FFFFFF',
-    padding: 16,
+    padding: 68,
     marginBottom: 16,
     borderRadius: 4,
   },
@@ -218,7 +230,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 8,
   },
-  timeSection: {
+  ClubAddressSection: {
     backgroundColor: '#FFFFFF',
     padding: 16,
     marginBottom: 16,

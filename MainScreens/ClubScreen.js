@@ -22,7 +22,7 @@ const ClubScreen = () => {
     setSelected(option);
   };
   const featuredItems = [
-    { id: "1", title: "HTC", image: htc },
+    { id: "1", title: "Jealousy THC Flower", image: htc },
     { id: "2", title: "TTP", image: llp },
     { id: "3", title: "Mogadishu", image: ttp },
     // ... add more items
@@ -107,7 +107,9 @@ const ClubScreen = () => {
               ]}
             >
               <Image source={item.image} style={styles.featuredItemImage} />
-              <Text style={styles.featuredItemTitle}>{item.title}</Text>
+              <View style={styles.featuredItemsTitleContainer}>
+                <Text style={styles.featuredItemTitle}>{item.title}</Text>
+              </View>
               <View style={styles.itemShadow} />
             </View>
           ))}
@@ -211,7 +213,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     paddingHorizontal: 20,
-    // Add styles for your featured items title
   },
   rating: {
     flexDirection: "row",
@@ -225,27 +226,33 @@ const styles = StyleSheet.create({
   featuredItemCard: {
     height: 200, // or any height you want
     marginBottom: 15,
-    borderRadius: 8,
+    borderRadius: 20,
     overflow: "hidden",
     backgroundColor: "white",
     width: "45%",
+    elevation:5
   },
   featuredItemImage: {
     width: "100%",
     height: "100%",
   },
-  featuredItemTitle: {
+  featuredItemsTitleContainer: {
     position: "absolute",
     bottom: 20,
-    left: 15,
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
+    left:0,
+    right:20,
     zIndex: 2,
+    
+  },
+  featuredItemTitle: {
+    marginLeft: 20,
+    color: "white",
+    fontSize: 14,
+    fontWeight: "bold",
   },
   itemShadow: {
     position: "absolute",
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
     height: "100%",
     top: 0, // Ensure it covers the top part of the image
     left: 0, // Align to the left

@@ -5,10 +5,10 @@ import {
 } from "@react-navigation/stack";
 import { TouchableOpacity, Text } from "react-native";
 import CheckoutScreen from "../MainScreens/CheckoutScreen";
-import PickUpScreen from "../MainScreens/PickUpScreen";
 import AddressScreen from "../MainScreens/AddressScreen";
 import AddressFormScreen from "../MainScreens/AddressFormScreen";
 import ClubScreen from "../MainScreens/ClubScreen";
+import PickUpScreen from "../MainScreens/PickUpScreen";
 import { Entypo } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 const Stack = createStackNavigator();

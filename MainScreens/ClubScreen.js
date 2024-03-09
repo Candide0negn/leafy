@@ -8,32 +8,41 @@ import {
   ScrollView,
   Platform,
   StatusBar,
+  FlatList,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import Logo from "../assets/logo.png";
+import htc from "../assets/htc.jpeg";
+import ttp from "../assets/ttp.jpeg";
+import llp from "../assets/llp.jpeg";
 const ClubScreen = () => {
   const [selected, setSelected] = useState("Delivery");
 
   const toggleSelection = (option) => {
     setSelected(option);
   };
-
+  const featuredItems = [
+    { id: "1", title: "HTC", image: htc },
+    { id: "2", title: "TTP", image: llp },
+    { id: "3", title: "Mogadishu", image: ttp },
+    // ... add more items
+  ];
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Image source={Logo} style={styles.logo} />
         <Text style={styles.title}>EcoCann</Text>
         <View style={styles.ratingContainer}>
-          <Text style={styles.ratingText}>4.2</Text>
-          <Text style={styles.reviewCount}>(32)</Text>
-          <Text> • 1.5 km </Text>
+          <View style={styles.rating}>
+            <Text style={styles.ratingText}>4.2 </Text>
+            <AntDesign name="star" size={12} color="black" />
+          </View>
+          <Text style={styles.reviewCount}> (32) • 1.5 km</Text>
         </View>
-
         <TouchableOpacity style={styles.joinButton}>
           <Text style={styles.joinButtonText}>Join</Text>
         </TouchableOpacity>
       </View>
-
       <View style={styles.deliveryOptionContainer}>
         <TouchableOpacity
           style={[
@@ -58,7 +67,6 @@ const ClubScreen = () => {
           <Text style={styles.deliveryOptionText}>Pick-up</Text>
         </TouchableOpacity>
       </View>
-
       <View style={styles.deliveryInfoContainer}>
         <View
           style={[
@@ -78,7 +86,7 @@ const ClubScreen = () => {
             style={{ marginTop: 4 }}
           />
           <View style={{ marginLeft: 7 }}>
-            <Text style={[styles.infoText]}>0.00$ delivery fee</Text>
+            <Text style={styles.infoText}>0.00$ delivery fee</Text>
             <Text style={styles.tabText}>new customers</Text>
           </View>
         </View>
@@ -87,10 +95,23 @@ const ClubScreen = () => {
           <Text style={styles.infoText}>Delivery time</Text>
         </View>
       </View>
+      <Text style={styles.featuredItemsText}>Featured items</Text>
       <View style={styles.featuredItemsContainer}>
-        {/* Add your featured items here */}
-        <Text style={styles.featuredItemsText}>Featured items</Text>
-        {/* Add placeholders or actual items */}
+        <View style={styles.itemsRow}>
+          {featuredItems.map((item, index) => (
+            <View
+              key={item.id}
+              style={[
+                styles.featuredItemCard,
+                { marginRight: index % 2 === 0 ? 10 : 0 }, // Add right margin to every first item of a pair
+              ]}
+            >
+              <Image source={item.image} style={styles.featuredItemImage} />
+              <Text style={styles.featuredItemTitle}>{item.title}</Text>
+              <View style={styles.itemShadow} />
+            </View>
+          ))}
+        </View>
       </View>
     </ScrollView>
   );
@@ -106,10 +127,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 20,
     backgroundColor: "#DDF3CD",
+    marginBottom: 10,
   },
   logo: {
-    width: 100,
-    height: 100,
+    width: 120,
+    height: 120,
   },
   title: {
     fontWeight: "bold",
@@ -118,6 +140,10 @@ const styles = StyleSheet.create({
   ratingContainer: {
     flexDirection: "row",
     alignItems: "center",
+    marginTop: 10,
+  },
+  rating: {
+    flexDirection: "row",
   },
   ratingText: {
     fontWeight: "bold",
@@ -134,7 +160,6 @@ const styles = StyleSheet.create({
     width: "50%",
     overflow: "hidden",
   },
-
   deliveryOption: {
     flex: 1,
     padding: 12,
@@ -149,12 +174,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#91C66A",
     borderRadius: 20,
     paddingVertical: 10,
-    paddingHorizontal: 30,
-    // Add styles for your join button
+    paddingHorizontal: 40,
+    marginTop: 20,
+    elevation: 10,
   },
   joinButtonText: {
     color: "white",
     fontWeight: "bold",
+    fontSize: 16,
   },
   deliveryInfoContainer: {
     flexDirection: "row",
@@ -177,13 +204,54 @@ const styles = StyleSheet.create({
     // Add styles for text
   },
   featuredItemsContainer: {
-    // Add styles for your featured items container
+    paddingHorizontal: 20,
+    marginVertical: 30,
   },
   featuredItemsText: {
     fontSize: 20,
     fontWeight: "bold",
     paddingHorizontal: 20,
     // Add styles for your featured items title
+  },
+  rating: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  itemsRow: {
+    flexDirection: "row", // Align items in a row
+    justifyContent: "space-between", // Space between items
+    flexWrap: "wrap", // Allow items to wrap to the next line
+  },
+  featuredItemCard: {
+    height: 200, // or any height you want
+    marginBottom: 15,
+    borderRadius: 8,
+    overflow: "hidden",
+    backgroundColor: "white",
+    width: "45%",
+  },
+  featuredItemImage: {
+    width: "100%",
+    height: "100%",
+  },
+  featuredItemTitle: {
+    position: "absolute",
+    bottom: 20,
+    left: 15,
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+    zIndex: 2,
+  },
+  itemShadow: {
+    position: "absolute",
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    height: "100%",
+    top: 0, // Ensure it covers the top part of the image
+    left: 0, // Align to the left
+    right: 0, // Align to the right
+    bottom: 0,
+    zIndex: 1,
   },
 });
 

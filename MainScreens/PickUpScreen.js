@@ -5,6 +5,7 @@ import { Feather } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import ClubIcon from '../assets/ClubIcon.png';
 import { useNavigation } from '@react-navigation/native';
+import PickUpDetails from '../Components/PickUpDetails';
 
 const PickUpScreen = () => {
     const navigation = useNavigation();
@@ -14,6 +15,9 @@ const PickUpScreen = () => {
   
     const toggleDeliveryOption = () => {
       setIsDelivery(!isDelivery);
+      if (isDelivery) {
+        navigation.navigate('Checkout');
+      }
     };
   
     const toggleItemSection = () => {
@@ -69,6 +73,7 @@ const PickUpScreen = () => {
           </Text>
         </TouchableOpacity>
       </View>
+      {!isDelivery && <PickUpDetails />}
       <TouchableOpacity style={[styles.TempContainer, { backgroundColor: '#CBEEBC' }]}>
         <Text style={{ textAlign: 'center' }}>Google Maps</Text>
       </TouchableOpacity>

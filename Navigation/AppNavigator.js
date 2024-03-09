@@ -3,6 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import CheckoutScreen from "../MainScreens/CheckoutScreen";
 import PickUpScreen from "../MainScreens/PickUpScreen";
+
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {

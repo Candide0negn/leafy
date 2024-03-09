@@ -1,100 +1,154 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Switch, Image } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Switch, Image, Animated , Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ClubIcon from '../assets/ClubIcon.png';
 import { useNavigation } from '@react-navigation/native';
+import { Feather } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 const CheckoutScreen = () => {
   const navigation = useNavigation();
   const [isDelivery, setIsDelivery] = useState(true);
   const [isItemExpanded, setIsItemExpanded] = useState(false);
   const [isSwitchEnabled, setIsSwitchEnabled] = useState(false);
+  const screenWidth = Dimensions.get('window').width;
+  const swipeAnim = useRef(new Animated.Value(0)).current;
 
   const toggleDeliveryOption = () => {
     setIsDelivery(!isDelivery);
+    swipeAnimation(!isDelivery);
   };
 
   const toggleItemSection = () => {
     setIsItemExpanded(!isItemExpanded);
   };
 
+  const swipeAnimation = (toRight) => {
+    Animated.timing(swipeAnim, {
+      toValue: toRight ? screenWidth : -screenWidth,
+      duration: 500,
+      useNativeDriver: true,
+    }).start(() => {
+      swipeAnim.setValue(0);
+    });
+  };
+
   const handlePickUpPress = () => {
-    navigation.navigate('PickUp');
+    toggleDeliveryOption();
   };
 
   return (
     <KeyboardAvoidingView
-      style={[styles.container, { backgroundColor: '#B6D7A8' }]} // Set background color to match header
+      style={[styles.container, { backgroundColor: '#B6D7A8' }]}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={100}
     >
-      <ScrollView contentContainerStyle={styles.scrollViewContainer}>
-        <View style={styles.header}>
-          <Text style={[styles.headerText, { fontSize: 24, fontWeight: 'bold', marginTop: 40 }]}>Checkout</Text>
-        </View>
-
-        <View style={[styles.deliveryOptions, { backgroundColor: '#CBEEBC' }]}>
-      <TouchableOpacity
+      <Animated.View
         style={[
-          styles.deliveryButton,
-          isDelivery ? styles.activeButton : styles.inactiveButton,
+          styles.scrollViewContainer,
+          {
+            transform: [{ translateX: swipeAnim }],
+          },
         ]}
-        onPress={toggleDeliveryOption}
       >
-        <Text
-          style={[
-            styles.deliveryButtonText,
-            isDelivery ? styles.activeButtonText : styles.inactiveButtonText,
-          ]}
-        >
-          Delivery
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={[
-          styles.deliveryButton,
-          !isDelivery ? styles.activeButton : styles.inactiveButton,
-        ]}
-        onPress={handlePickUpPress}
-      >
-        <Text
-          style={[
-            styles.deliveryButtonText,
-            !isDelivery ? styles.activeButtonText : styles.inactiveButtonText,
-          ]}
-        >
-          Pick-up
-        </Text>
-      </TouchableOpacity>
-    </View>
-      <TouchableOpacity style={[styles.addressSection, { backgroundColor: '#CBEEBC' }]}>
-        <View style={styles.addressRow}>
-          <Icon name="home" size={24} color="#757575" />
-          <Text style={styles.sectionTitle}>Delivery address</Text>
-          <Icon name="chevron-right" size={24} color="#757575" />
-        </View>
-        <Text>Name Name</Text>
-        <Text>+1023456789</Text>
-        <Text>Address Details, Address Details...</Text>
-        <Text>12345 City, BIN</Text>
-      </TouchableOpacity>
+        <ScrollView>
+          <View style={styles.header}>
+            <Text style={[styles.headerText, { fontSize: 24, fontWeight: 'bold', marginTop: 40 }]}>Checkout</Text>
+          </View>
 
-      <TouchableOpacity style={[styles.timeSection, { backgroundColor: '#CBEEBC' }]}>
-        <View style={styles.addressRow}>
-          <Icon name="access-time" size={24} color="#757575" />
-          <Text style={styles.sectionTitle}>Deliver Time</Text>
-          <Icon name="chevron-right" size={24} color="#757575" />
-        </View>
-      </TouchableOpacity>
+          <View style={[styles.deliveryOptions, { backgroundColor: '#CBEEBC' }]}>
+            <TouchableOpacity
+              style={[
+                styles.deliveryButton,
+                isDelivery ? styles.activeButton : styles.inactiveButton,
+              ]}
+              onPress={toggleDeliveryOption}
+            >
+              <Text
+                style={[
+                  styles.deliveryButtonText,
+                  isDelivery ? styles.activeButtonText : styles.inactiveButtonText,
+                ]}
+              >
+                Delivery
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.deliveryButton,
+                !isDelivery ? styles.activeButton : styles.inactiveButton,
+              ]}
+              onPress={handlePickUpPress}
+            >
+              <Text
+                style={[
+                  styles.deliveryButtonText,
+                  !isDelivery ? styles.activeButtonText : styles.inactiveButtonText,
+                ]}
+              >
+                Pick-up
+              </Text>
+            </TouchableOpacity>
+          </View>
 
-      <TouchableOpacity style={[styles.paymentSection, { backgroundColor: '#CBEEBC' }]}>
-        <View style={styles.addressRow}>
-          <Icon name="payment" size={24} color="#757575" />
-          <Text style={styles.sectionTitle}>Payment Details</Text>
-          <Icon name="chevron-right" size={24} color="#757575" />
-        </View>
-      </TouchableOpacity>
-      <Text style={styles.ItemsectionTitle}>Your Items</Text>
+          {isDelivery && (
+           
+           
+           <View>
+              <TouchableOpacity style={[styles.addressSection, { backgroundColor: '#CBEEBC' }]}>
+                <View style={styles.addressRow}>
+                  <Icon name="home" size={24} color="#757575" />
+                  <Text style={styles.sectionTitle}>Delivery address</Text>
+                  <Icon name="chevron-right" size={24} color="#757575" />
+                </View>
+                <Text>Name Name</Text>
+                <Text>+1023456789</Text>
+                <Text>Address Details, Address Details...</Text>
+                <Text>12345 City, BIN</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={[styles.timeSection, { backgroundColor: '#CBEEBC' }]}>
+                <View style={styles.addressRow}>
+                  <Icon name="access-time" size={24} color="#757575" />
+                  <Text style={styles.sectionTitle}>Deliver Time</Text>
+                  <Icon name="chevron-right" size={24} color="#757575" />
+                </View>
+              </TouchableOpacity>
+            </View>
+          )}
+
+          {!isDelivery && (
+            <View>
+              <TouchableOpacity style={[styles.TempContainer, { backgroundColor: '#CBEEBC' }]}>
+                <Text style={{ textAlign: 'center' }}>Google Maps</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.ClubAddressSection, { backgroundColor: '#CBEEBC' }]}>
+                <View style={styles.addressRow}>
+                  <FontAwesome5 name="store-alt" size={24} color="black" />
+                  <Text style={styles.sectionTitle}>Social Club's Name</Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Icon name="chevron-right" size={24} color="#757575" />
+                  </View>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.paymentSection, { backgroundColor: '#CBEEBC' }]}>
+                <View style={styles.addressRow}>
+                  <Feather name="package" size={24} color="black" />
+                  <Text style={styles.sectionTitle}>Pick Up Time</Text>
+                  <Icon name="chevron-right" size={24} color="#757575" />
+                </View>
+              </TouchableOpacity>
+            </View>
+          )}
+
+          <TouchableOpacity style={[styles.paymentSection, { backgroundColor: '#CBEEBC' }]}>
+            <View style={styles.addressRow}>
+              <Icon name="payment" size={24} color="#757575" />
+              <Text style={styles.sectionTitle}>Payment Details</Text>
+              <Icon name="chevron-right" size={24} color="#757575" />
+            </View>
+          </TouchableOpacity>
+          <Text style={styles.ItemsectionTitle}>Your Items</Text>
       <TouchableOpacity style={[styles.itemSection, { backgroundColor: '#CBEEBC' }]} onPress={toggleItemSection}>
   <View style={styles.cardHeader}>
   <Image source={ClubIcon} style={styles.leftIcon}/>
@@ -153,6 +207,7 @@ const CheckoutScreen = () => {
       </Text>
 
       </ScrollView>
+      </Animated.View>
 
       <View style={[styles.orderButtonContainer, { backgroundColor: 'transparent', position: 'absolute', bottom: 0, left: 0, right: 0 }]}>
         <TouchableOpacity style={styles.orderButton}>
@@ -347,7 +402,30 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between', // Aligns children to start and end of container
     alignItems: 'center', // Centers items vertically in the row
   },
-  
+  //Pick-Up Details section
+  TempContainer: {
+    backgroundColor: '#FFFFFF',
+    padding: 68,
+    marginBottom: 16,
+    borderRadius: 4,
+  },
+  addressRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  ClubAddressSection: {
+    backgroundColor: '#FFFFFF',
+    padding: 16,
+    marginBottom: 16,
+    borderRadius: 4,
+  },
+  paymentSection: {
+    backgroundColor: '#FFFFFF',
+    padding: 16,
+    marginBottom: 16,
+    borderRadius: 4,
+  },
   
 });
 

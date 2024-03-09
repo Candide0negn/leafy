@@ -5,7 +5,7 @@ import { Feather } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import ClubIcon from '../assets/ClubIcon.png';
 import { useNavigation } from '@react-navigation/native';
-import PickUpDetails from '../Components/PickUpDetails';
+
 
 const PickUpScreen = () => {
     const navigation = useNavigation();

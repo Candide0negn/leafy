@@ -5,6 +5,7 @@ import ClubIcon from '../assets/ClubIcon.png';
 import { useNavigation } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
+import ToggleButton from '../Components/ToggleButton';
 
 const CheckoutScreen = () => {
   const navigation = useNavigation();
@@ -12,30 +13,34 @@ const CheckoutScreen = () => {
   const [isItemExpanded, setIsItemExpanded] = useState(false);
   const [isSwitchEnabled, setIsSwitchEnabled] = useState(false);
   const screenWidth = Dimensions.get('window').width;
-  const swipeAnim = useRef(new Animated.Value(0)).current;
+  const [fadeAnim] = useState(new Animated.Value(0));
 
   const toggleDeliveryOption = () => {
     setIsDelivery(!isDelivery);
-    swipeAnimation(!isDelivery);
+    fadeAnimation(!isDelivery);
   };
 
   const toggleItemSection = () => {
     setIsItemExpanded(!isItemExpanded);
   };
 
-  const swipeAnimation = (toRight) => {
-    Animated.timing(swipeAnim, {
-      toValue: toRight ? screenWidth : -screenWidth,
+  const fadeAnimation = () => {
+    Animated.timing(fadeAnim, {
+      toValue: isDelivery ? 0 : 1,
       duration: 500,
       useNativeDriver: true,
-    }).start(() => {
-      swipeAnim.setValue(0);
-    });
+    }).start();
   };
 
-  const handlePickUpPress = () => {
-    toggleDeliveryOption();
+  const handleToggle = (value) => {
+    setIsDelivery(value === 'delivery');
   };
+
+  const options = [
+    { label: 'Delivery', value: 'delivery' },
+    { label: 'Pick-up', value: 'pickup' },
+  ];
+
 
   return (
     <KeyboardAvoidingView
@@ -43,56 +48,23 @@ const CheckoutScreen = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={100}
     >
-      <Animated.View
-        style={[
-          styles.scrollViewContainer,
-          {
-            transform: [{ translateX: swipeAnim }],
-          },
-        ]}
-      >
+      
         <ScrollView>
           <View style={styles.header}>
             <Text style={[styles.headerText, { fontSize: 24, fontWeight: 'bold', marginTop: 40 }]}>Checkout</Text>
           </View>
 
-          <View style={[styles.deliveryOptions, { backgroundColor: '#CBEEBC' }]}>
-            <TouchableOpacity
-              style={[
-                styles.deliveryButton,
-                isDelivery ? styles.activeButton : styles.inactiveButton,
-              ]}
-              onPress={toggleDeliveryOption}
-            >
-              <Text
-                style={[
-                  styles.deliveryButtonText,
-                  isDelivery ? styles.activeButtonText : styles.inactiveButtonText,
-                ]}
-              >
-                Delivery
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.deliveryButton,
-                !isDelivery ? styles.activeButton : styles.inactiveButton,
-              ]}
-              onPress={handlePickUpPress}
-            >
-              <Text
-                style={[
-                  styles.deliveryButtonText,
-                  !isDelivery ? styles.activeButtonText : styles.inactiveButtonText,
-                ]}
-              >
-                Pick-up
-              </Text>
-            </TouchableOpacity>
-          </View>
+          <ToggleButton options={options} onToggle={handleToggle} />
 
+          <Animated.View
+        style={[
+          styles.scrollViewContainer,
+          {
+            transform: [{ translateX: fadeAnim }],
+          },
+        ]}
+      >
           {isDelivery && (
-           
            
            <View>
               <TouchableOpacity style={[styles.addressSection, { backgroundColor: '#CBEEBC' }]}>
@@ -206,8 +178,9 @@ const CheckoutScreen = () => {
         text. Disclaimer text. Disclaimer text.
       </Text>
 
-      </ScrollView>
       </Animated.View>
+      </ScrollView>
+      
 
       <View style={[styles.orderButtonContainer, { backgroundColor: 'transparent', position: 'absolute', bottom: 0, left: 0, right: 0 }]}>
         <TouchableOpacity style={styles.orderButton}>

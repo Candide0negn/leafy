@@ -10,6 +10,7 @@ import AddressFormScreen from "../MainScreens/AddressFormScreen";
 import ClubScreen from "../MainScreens/ClubScreen";
 import PickUpScreen from "../MainScreens/PickUpScreen";
 import DetailsScreen from "../MainScreens/DetailsScreen";
+import CartScreen from "../MainScreens/CartScreen";
 import { Entypo } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 const Stack = createStackNavigator();
@@ -21,9 +22,10 @@ const AppNavigator = () => {
     headerTitleStyle: {
       fontWeight: "900",
       fontSize: 24,
+      marginLeft:-10
     },
     headerStyle: {
-      backgroundColor: "#ACD48E",
+      backgroundColor: "#DFF0D8",
       shadowColor: "transparent",
     },
     headerLeft: () => (
@@ -33,10 +35,11 @@ const AppNavigator = () => {
     ),
     headerLeftContainerStyle: {
       paddingLeft: 20,
+      backgroundColor:"red"
     },
   };
   return (
-    <Stack.Navigator initialRouteName="Details">
+    <Stack.Navigator initialRouteName="Cart">
       <Stack.Screen
         name="Checkout"
         component={CheckoutScreen}
@@ -73,7 +76,12 @@ const AppNavigator = () => {
       <Stack.Screen
         name="Details"
         component={DetailsScreen}
-        options={{headerShown:false}}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Cart"
+        component={CartScreen}
+        options={headerOptions}
       />
     </Stack.Navigator>
   );

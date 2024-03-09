@@ -22,7 +22,7 @@ const AppNavigator = () => {
     headerTitleStyle: {
       fontWeight: "900",
       fontSize: 24,
-      marginLeft:-10
+      marginLeft: -25,
     },
     headerStyle: {
       backgroundColor: "#DFF0D8",
@@ -35,7 +35,6 @@ const AppNavigator = () => {
     ),
     headerLeftContainerStyle: {
       paddingLeft: 20,
-      backgroundColor:"red"
     },
   };
   return (

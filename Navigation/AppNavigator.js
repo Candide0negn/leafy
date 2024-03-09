@@ -9,6 +9,7 @@ import AddressScreen from "../MainScreens/AddressScreen";
 import AddressFormScreen from "../MainScreens/AddressFormScreen";
 import ClubScreen from "../MainScreens/ClubScreen";
 import PickUpScreen from "../MainScreens/PickUpScreen";
+import DetailsScreen from "../MainScreens/DetailsScreen";
 import { Entypo } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 const Stack = createStackNavigator();
@@ -35,7 +36,7 @@ const AppNavigator = () => {
     },
   };
   return (
-    <Stack.Navigator initialRouteName="Club">
+    <Stack.Navigator initialRouteName="Details">
       <Stack.Screen
         name="Checkout"
         component={CheckoutScreen}
@@ -68,6 +69,11 @@ const AppNavigator = () => {
         name="Club"
         component={ClubScreen}
         options={headerOptions}
+      />
+      <Stack.Screen
+        name="Details"
+        component={DetailsScreen}
+        options={{headerShown:false}}
       />
     </Stack.Navigator>
   );

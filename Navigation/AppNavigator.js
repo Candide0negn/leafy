@@ -8,6 +8,7 @@ import CheckoutScreen from "../MainScreens/CheckoutScreen";
 import PickUpScreen from "../MainScreens/PickUpScreen";
 import AddressScreen from "../MainScreens/AddressScreen";
 import AddressFormScreen from "../MainScreens/AddressFormScreen";
+import ClubScreen from "../MainScreens/ClubScreen";
 import { Entypo } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 const Stack = createStackNavigator();
@@ -15,7 +16,6 @@ const Stack = createStackNavigator();
 const AppNavigator = () => {
   const navigation = useNavigation();
   const headerOptions = {
-    headerTitle: "Address",
     headerTitleAlign: "center",
     headerTitleStyle: {
       fontWeight: "900",
@@ -33,7 +33,6 @@ const AppNavigator = () => {
     headerLeftContainerStyle: {
       paddingLeft: 20,
     },
-    cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
   };
   return (
     <Stack.Navigator initialRouteName="Address">
@@ -50,12 +49,20 @@ const AppNavigator = () => {
       <Stack.Screen
         name="Address"
         component={AddressScreen}
-        options={{ headerShown: false }}
+        options={{
+          ...headerOptions,
+          headerTitle: "Address",
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
       />
       <Stack.Screen
         name="AddressForm"
         component={AddressFormScreen}
-        options={headerOptions}
+        options={{
+          ...headerOptions,
+          headerTitle: "Address",
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
       />
     </Stack.Navigator>
   );

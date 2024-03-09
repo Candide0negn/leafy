@@ -55,9 +55,6 @@ const AddressScreen = ({ navigation }) => {
   };
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerText}>Address</Text>
-      </View>
       <View style={styles.deliveryAddress}>
         <Text style={styles.addressTitle}>Delivery address</Text>
         <TouchableOpacity style={[styles.currentAddressButton]}>

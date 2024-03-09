@@ -1,6 +1,13 @@
-import React from 'react';
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, FlatList, Dimensions } from 'react-native';
+import React, { useEffect } from 'react';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, FlatList, Dimensions, Image } from 'react-native';
 import { Feather, Ionicons, FontAwesome } from '@expo/vector-icons';
+import { Asset } from 'expo-asset';
+
+// Import optimized images
+import foodImage from './assets/bud.png';
+import electronicsImage from './assets/bong.png';
+import groceriesImage from './assets/weed1.png';
+import booksImage from './assets/new.png';
 
 const { width } = Dimensions.get('window');
 
@@ -12,10 +19,10 @@ const storeData = [
 ];
 
 const categoryData = [
-  { id: '1', name: 'food' },
-  { id: '2', name: 'electronics' },
-  { id: '3', name: 'groceries' },
-  { id: '4', name: 'books' },
+  { id: '1', name: 'Flower', image: foodImage },
+  { id: '2', name: 'Accessories', image: electronicsImage },
+  { id: '3', name: 'Pre-Rolls', image: groceriesImage },
+  { id: '4', name: 'New Arrivals', image: booksImage },
   // Add more category data as needed
 ];
 
@@ -26,16 +33,28 @@ const newProductsData = [
 ];
 
 export default function App() {
+  useEffect(() => {
+    // Preload images
+    (async () => {
+      await Promise.all([
+        Asset.loadAsync(foodImage),
+        Asset.loadAsync(electronicsImage),
+        Asset.loadAsync(groceriesImage),
+        Asset.loadAsync(booksImage),
+      ]);
+    })();
+  }, []);
+
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.locationText} numberOfLines={1}>Kurt-Schu...</Text>
-        <View style={styles.headerIcons}>
-          <Feather name="search" size={24} color="#333" style={styles.icon} />
-          <Feather name="shopping-cart" size={24} color="#333" style={styles.icon} />
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
+        <View style={styles.header}>
+          <Text style={styles.locationText} numberOfLines={1}>Kurt-Schu...</Text>
+          <View style={styles.headerIcons}>
+            <Feather name="search" size={24} color="#333" style={styles.icon} />
+            <Feather name="shopping-cart" size={24} color="#333" style={styles.icon} />
+          </View>
         </View>
-      </View>
-      <ScrollView contentContainerStyle={styles.contentContainer}>
         <FlatList
           data={storeData}
           horizontal
@@ -53,9 +72,12 @@ export default function App() {
           horizontal
           showsHorizontalScrollIndicator={false}
           renderItem={({ item }) => (
-            <TouchableOpacity style={styles.categoryCard}>
+            <View style={styles.categoryContainer}>
+              <View style={styles.categoryCard}>
+                <Image source={item.image} style={styles.categoryImage} lazy={true} />
+              </View>
               <Text style={styles.categoryText}>{item.name}</Text>
-            </TouchableOpacity>
+            </View>
           )}
           keyExtractor={(item) => item.id}
         />
@@ -93,100 +115,144 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: 'rgba(145, 199, 107, 0.25)',
+  },
+  scrollView: {
+    flex: 1,
   },
   header: {
     flexDirection: 'row',
+    marginTop: 40,
+    paddingRight: 28,
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: '#FFFFFF',
   },
   headerIcons: {
     flexDirection: 'row',
+    alignItems: 'center',
   },
   icon: {
     marginLeft: 16,
+    color: '#333333',
+    fontSize: 24,
   },
   locationText: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '600',
     color: '#333333',
-    maxWidth: '70%', // Preventing overflow
+    maxWidth: '70%',
   },
   contentContainer: {
-    paddingVertical: 16,
+    paddingBottom: 80,
   },
   storeCard: {
-    minWidth: width * 0.75,
-    minHeight: 170,
-    marginHorizontal: 16, // Adjusted for proper spacing
-    backgroundColor: '#FFFFFF',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 5,
-    elevation: 3,
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    shadowColor: '#000',
-    shadowOffset: { height: 5, width: 0 }, // Shadow correctly cast below
+    minWidth: width * 0.77,
+    minHeight: 195,
+    marginHorizontal: 16,
+    marginVertical: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.7)', // For glassy look with transparency
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    borderRadius: 30,
+    elevation: 1, // Keep for Android compatibility
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 }, // Increased height for bottom-only shadow
+    shadowOpacity: 0.099, // Subtle effect
+    shadowRadius: 0.5, // Reduced spread
+    backdropFilter: 'blur(60px)', // Blur effect for glassy look (check compatibility)
+    border: '1px solid rgba(255, 255, 255, 0.18)', // Enhances the glass effect
   },
   storeText: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: 'bold',
-    color: '#333333',
+    color: '#2c2c2c',
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: 'bold',
-    marginVertical: 12,
+    marginVertical: 20,
     paddingHorizontal: 16,
     color: '#333333',
   },
-  categoryCard: {
-    minWidth: 100,
-    backgroundColor: '#FF5555',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 5,
+  categoryContainer: {
+    alignItems: 'center',
     marginHorizontal: 8,
-    elevation: 3,
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    shadowColor: '#000',
-    shadowOffset: { height: 5, width: 0 }, // Shadow correctly cast below
+  },
+  categoryCard: {
+    minWidth: 140,
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    marginLeft: 10,
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    borderRadius: 16,
+    elevation: 4,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  categoryImage: {
+    width: 55,
+    height: 45,
+    resizeMode: 'contain', // Add this line to ensure images are properly sized
   },
   categoryText: {
-    color: '#FFFFFF',
+    marginTop: 8,
+    color: '#333333',
     fontWeight: 'bold',
     textTransform: 'capitalize',
+    fontSize: 16,
   },
   newProductCard: {
-    minWidth: 120,
+    minWidth: 160,
     backgroundColor: '#333333',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 5,
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    borderRadius: 16,
     marginHorizontal: 8,
-    elevation: 3,
+    elevation: 4,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
-    shadowRadius: 5,
-    shadowColor: '#000',
-    shadowOffset: { height: 5, width: 0 }, // Shadow correctly cast below
+    shadowRadius: 8,
   },
   newProductText: {
     color: '#FFFFFF',
     fontWeight: 'bold',
+    fontSize: 18,
   },
   bottomNavBar: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    backgroundColor: '#FFFFFF',
-    paddingVertical: 8,
-    elevation: 4,
+    marginLeft: 8,
+    alignItems: 'center',
+    width: '96%',
+    alignSelf: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 30,
+    backgroundColor: 'rgba(255, 255, 255, 1)',
+    elevation: 6,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+    marginBottom: 8,
+    overflow: 'hidden',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
   navButton: {
-    padding: 8,
+    padding: 10,
+  },
+  navIcon: {
+    fontSize: 28,
+    color: '#333333',
   },
 });

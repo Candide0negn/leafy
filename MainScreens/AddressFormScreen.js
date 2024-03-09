@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderRadius: 4,
-    marginBottom: 22,
+    marginBottom: 32,
   },
   inputHalf: {
     width: "45%",
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 22,
+    marginBottom: 32,
   },
   saveButton: {
     backgroundColor: "black",

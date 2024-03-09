@@ -22,7 +22,7 @@ const AppNavigator = () => {
       fontSize: 24,
     },
     headerStyle: {
-      backgroundColor: "#91C66A",
+      backgroundColor: "#ACD48E",
       shadowColor: "transparent",
     },
     headerLeft: () => (
@@ -35,7 +35,7 @@ const AppNavigator = () => {
     },
   };
   return (
-    <Stack.Navigator initialRouteName="Address">
+    <Stack.Navigator initialRouteName="Club">
       <Stack.Screen
         name="Checkout"
         component={CheckoutScreen}
@@ -63,6 +63,11 @@ const AppNavigator = () => {
           headerTitle: "Address",
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         }}
+      />
+      <Stack.Screen
+        name="Club"
+        component={ClubScreen}
+        options={headerOptions}
       />
     </Stack.Navigator>
   );

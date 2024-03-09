@@ -96,7 +96,7 @@ const AddressScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#91C66A",
+    backgroundColor: "#ACD48E",
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
     paddingHorizontal: 16,
   },

@@ -1,58 +1,49 @@
-import React, { useState } from 'react';
-import { View, TouchableOpacity, Animated, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, TouchableOpacity, Animated, StyleSheet, Text , buttonWidth} from 'react-native';
 
 const ToggleButton = ({ options, onToggle }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const toggleAnimation = new Animated.Value(0);
 
-  const toggleOption = (index) => {
+  useEffect(() => {
     Animated.timing(toggleAnimation, {
-      toValue: index,
+      toValue: activeIndex,
       duration: 300,
       useNativeDriver: true,
     }).start();
+  }, [activeIndex]);
+
+  const toggleOption = (index) => {
     setActiveIndex(index);
     onToggle(options[index].value);
   };
 
+  const buttonWidth = 100; // Adjust this value to your desired button width
   const animatedStyles = {
     transform: [
       {
         translateX: toggleAnimation.interpolate({
-          inputRange: [0, 1],
-          outputRange: [0, buttonWidth * (options.length - 1)],
+          inputRange: options.map((_, index) => index),
+          outputRange: options.map((_, index) => buttonWidth * index),
         }),
       },
     ],
   };
 
-  const buttonWidth = 100; // Adjust this value to your desired button width
-
   return (
     <View style={styles.container}>
       {options.map((option, index) => (
         <TouchableOpacity
-          key={option.label}
-          style={[styles.button, index === activeIndex && styles.activeButton]}
+          key={index}
+          style={[styles.button, activeIndex === index ? styles.activeButton : null]}
           onPress={() => toggleOption(index)}
         >
-          <Animated.View
-            style={[
-              styles.toggleButton,
-              animatedStyles,
-              { width: buttonWidth },
-            ]}
-          />
-          <Animated.Text
-            style={[
-              styles.buttonText,
-              index === activeIndex && styles.activeButtonText,
-            ]}
-          >
+          <Text style={[styles.buttonText, activeIndex === index ? styles.activeButtonText : null]}>
             {option.label}
-          </Animated.Text>
+          </Text>
         </TouchableOpacity>
       ))}
+      <Animated.View style={[styles.toggleButton, animatedStyles]} />
     </View>
   );
 };
@@ -70,6 +61,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     justifyContent: 'center',
     alignItems: 'center',
+    flex: 1,
   },
   activeButton: {
     backgroundColor: '#6FCF97',
@@ -87,6 +79,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#6FCF97',
     height: '100%',
     borderRadius: 16,
+    width: buttonWidth,
   },
 });
 

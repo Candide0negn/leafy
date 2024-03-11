@@ -96,7 +96,7 @@ const CartScreen = () => {
 
       <TouchableOpacity
         style={styles.checkoutButton}
-        onPress={() => navigation.navigate("Checkout")}
+        onPress={() => navigation.navigate("Checkout", { cartItems })}
       >
         <Text style={styles.checkoutButtonText}>Checkout</Text>
       </TouchableOpacity>

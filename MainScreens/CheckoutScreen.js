@@ -1,14 +1,16 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef , useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Switch, Image, Animated , Dimensions , Modal , FlatList } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ClubIcon from '../assets/ClubIcon.png';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation , useRoute} from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import ToggleButton from '../Components/ToggleButton';
 import { DateTimePickerAndroid , DateTimePickerIOS } from '@react-native-community/datetimepicker';
 import moment from 'moment';
+import CartItem from '../Components/CartItem';
+import QuantityBadge from '../Components/QuantityBadge';
 
 const CheckoutScreen = () => {
   const navigation = useNavigation();
@@ -21,6 +23,9 @@ const CheckoutScreen = () => {
   const [modalType, setModalType] = useState(null); // 'pickup' or 'delivery'
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
+  const route = useRoute();
+  const { cartItems } = route.params || {};
+  const [totalQuantity, setTotalQuantity] = useState(0);
 
   const handleToggle = (value) => {
     setIsDelivery(value === 'delivery');
@@ -128,6 +133,17 @@ const CheckoutScreen = () => {
   
     return dates;
   };
+  const calculateSubtotal = (cartItems) => {
+    let subtotal = 0;
+    cartItems.forEach((item) => {
+      subtotal += parseFloat(item.amount) * item.quantity;
+    });
+    return subtotal.toFixed(2);
+  };
+  useEffect(() => {
+    const total = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+    setTotalQuantity(total);
+  }, [cartItems]);
 
   return (
     <KeyboardAvoidingView
@@ -210,32 +226,49 @@ const CheckoutScreen = () => {
             </View>
           </TouchableOpacity>
           <Text style={styles.ItemsectionTitle}>Your Items</Text>
-      <TouchableOpacity style={[styles.itemSection, { backgroundColor: '#CBEEBC' }]} onPress={toggleItemSection}>
-  <View style={styles.cardHeader}>
-  <Image source={ClubIcon} style={styles.leftIcon}/>
-    <Text style={styles.cardHeaderText}>Social Club's Name</Text>
-  </View>
-  <Text style={styles.ItemCount} >1 item</Text>
-  <TouchableOpacity style={styles.iconPosition} onPress={toggleItemSection}>
-    <Icon name={isItemExpanded ? 'expand-less' : 'expand-more'} size={24} color="#757575" />
-  </TouchableOpacity>
-  {isItemExpanded && (
-    <>
-      <Text>nothing yet</Text>
-    </>
-  )}
-</TouchableOpacity>
+          <TouchableOpacity style={[styles.itemSection, { backgroundColor: '#CBEEBC' }]} onPress={toggleItemSection}>
+            <View style={styles.cardHeader}>
+              <Image source={ClubIcon} style={styles.leftIcon} />
+              <Text style={styles.cardHeaderText}>Social Club's Name</Text>
+            </View>
+            <View style={styles.TotalItemsContainer}>
+              <QuantityBadge quantity={totalQuantity} />
+              <Text >items</Text>
+            </View>
+              <TouchableOpacity
+                style={styles.iconPosition}
+                onPress={toggleItemSection}
+              >
+              <Icon name={isItemExpanded ? 'expand-less' : 'expand-more'} size={24} color="#757575" />
+            </TouchableOpacity>
+            {isItemExpanded && (
+              <>
+                {cartItems && cartItems.map((item) => (
+                  <View key={item.id} style={styles.itemDetailsContainer}>
+                  <View style={styles.itemDetails}>
+                    <QuantityBadge quantity={item.quantity} />
+                    <Text style={{ marginLeft: 8 }}>{item.name}</Text>
+                  </View>
+                  <Text>${item.amount}</Text>
+                </View>
+                ))}
+              </>
+            )}
+          </TouchableOpacity>
 
 
-      <TouchableOpacity style={[styles.discountSection, { backgroundColor: '#CBEEBC' }]}>
+      <TouchableOpacity style={[styles.discountSection, { backgroundColor: '#CBEEBC' }]} onPress={() => navigation.navigate('Discount')}>
         <Ionicons name="pricetag" size={24} color="black" />
         <Text style={styles.sectionTitle}>Add Discount Code</Text>
+        <Icon name="chevron-right" size={24} color="#757575" />
       </TouchableOpacity>
 
       <View style={[styles.subtotalsSection]}>
-        <Text style={[styles.subtotalText, { textAlign: 'left' }]}>Subtotal</Text>
-        <Text style={[styles.subtotalText, { textAlign: 'right' }]}>0.00$</Text>
-      </View>
+            <Text style={[styles.subtotalText, { textAlign: 'left' }]}>Subtotal</Text>
+            <Text style={[styles.subtotalText, { textAlign: 'right' }]}>
+              ${calculateSubtotal(cartItems)}
+            </Text>
+          </View>
       <View style={[styles.DeliveryFeeSection]}>
         <Text style={[styles.subtotalText, { textAlign: 'left' }]}>Delivery Fee</Text>
         <Text style={[styles.subtotalText, { textAlign: 'right' }]}>0.00$</Text>
@@ -506,12 +539,6 @@ const styles = StyleSheet.create({
   cardHeaderText: {
     flex: 1, // Allows the text to fill the space, pushing the icon to the right
   },
-  ItemCount: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginLeft : 48,
-  },
   iconPosition: {
     position: 'absolute',
     right: 10, // Adjust according to your layout
@@ -619,6 +646,21 @@ const styles = StyleSheet.create({
   },
   dateText: {
     fontWeight: 'bold',
+  },
+  TotalItemsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 48,
+  },
+  itemDetailsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginVertical: 4,
+  },
+  itemDetails: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });
 

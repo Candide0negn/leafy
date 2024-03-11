@@ -15,6 +15,7 @@ import MapsScreen from "../MainScreens/MapsScreen" ;
 import { Entypo } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import PaymentDetails from "../MainScreens/PaymentDetails";
+import DiscountScreen from "../MainScreens/DiscountScreen";
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
@@ -92,6 +93,11 @@ const AppNavigator = () => {
       <Stack.Screen
         name="Payment"
         component={PaymentDetails}
+        options={headerOptions}
+      />
+      <Stack.Screen
+        name="Discount"
+        component={DiscountScreen}
         options={headerOptions}
       />
     </Stack.Navigator>

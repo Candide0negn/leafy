@@ -144,10 +144,6 @@ const CheckoutScreen = () => {
         ]}
       >
         <ScrollView>
-          <View style={styles.header}>
-            <Text style={[styles.headerText, { fontSize: 24, fontWeight: 'bold', marginTop: 40 }]}>Checkout</Text>
-          </View>
-
           <ToggleButton options={options} onToggle={handleToggle} />
 
           {isDelivery && (

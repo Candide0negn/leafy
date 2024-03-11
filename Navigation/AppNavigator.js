@@ -40,11 +40,11 @@ const AppNavigator = () => {
     },
   };
   return (
-    <Stack.Navigator initialRouteName="Checkout">
+    <Stack.Navigator initialRouteName="Cart">
       <Stack.Screen
         name="Checkout"
         component={CheckoutScreen}
-        options={{ headerShown: false }}
+        options={headerOptions}
       />
       <Stack.Screen
         name="PickUp"

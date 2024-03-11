@@ -10,10 +10,11 @@ import {
   Platform,
   StatusBar,
 } from "react-native";
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "@react-navigation/native";
 import { AntDesign } from "@expo/vector-icons";
-import htc from "../assets/htc.jpeg";
-import ttp from "../assets/ttp.jpeg";
+//changed imports so niggas dont see bunch of weed on my screen at uni
+import htc from "../assets/ClubIcon.png";
+import ttp from "../assets/ClubIcon.png";
 import llp from "../assets/llp.jpeg";
 import { TextInput } from "react-native-gesture-handler";
 const CartItem = ({ name, image, amount, quantity }) => {
@@ -58,12 +59,20 @@ const CartItem = ({ name, image, amount, quantity }) => {
 };
 
 const CartScreen = () => {
-  // Dummy data for cart items
+  const [subtotal, setSubTotal] = useState(0);
   const cartItems = [
     { id: "1", name: "Item name", image: htc, amount: "0.00", quantity: 1 },
-    { id: "2", name: "Item name", image: ttp, amount: "0.00", quantity: 1 },
+    { id: "2", name: "Item name", image: ttp, amount: "1.00", quantity: 1 },
   ];
-  const navigation = useNavigation()
+  const calculateSubtotal = () => {
+    let subtotal = 0;
+    cartItems.forEach((item) => {
+      subtotal += parseFloat(item.amount) * item.quantity;
+    });
+    return subtotal.toFixed(2);
+  };
+
+  const navigation = useNavigation();
   return (
     <View style={styles.container}>
       <FlatList
@@ -77,11 +86,17 @@ const CartScreen = () => {
           />
         )}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.cartList}
+        ListFooterComponent={() => (
+          <View style={styles.subtotalRow}>
+            <Text style={styles.subtotalText}>Subtotal:</Text>
+            <Text style={styles.subtotalAmount}>${calculateSubtotal()}</Text>
+          </View>
+        )}
       />
+
       <TouchableOpacity
         style={styles.checkoutButton}
-        onPress={() => navigation.navigate('Checkout')}
+        onPress={() => navigation.navigate("Checkout")}
       >
         <Text style={styles.checkoutButtonText}>Checkout</Text>
       </TouchableOpacity>
@@ -163,8 +178,20 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
   },
-  cartList: {
-    paddingBottom: 80, // space for checkout button
+
+  subtotalRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  subtotalText: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  subtotalAmount: {
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });
 

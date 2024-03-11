@@ -14,6 +14,7 @@ import CartScreen from "../MainScreens/CartScreen";
 import MapsScreen from "../MainScreens/MapsScreen" ;
 import { Entypo } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import PaymentDetails from "../MainScreens/PaymentDetails";
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
@@ -39,7 +40,7 @@ const AppNavigator = () => {
     },
   };
   return (
-    <Stack.Navigator initialRouteName="Maps">
+    <Stack.Navigator initialRouteName="Checkout">
       <Stack.Screen
         name="Checkout"
         component={CheckoutScreen}
@@ -87,6 +88,11 @@ const AppNavigator = () => {
         name="Maps"
         component={MapsScreen}
         options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Payment"
+        component={PaymentDetails}
+        options={headerOptions}
       />
     </Stack.Navigator>
   );

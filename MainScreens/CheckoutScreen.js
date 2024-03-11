@@ -5,8 +5,10 @@ import ClubIcon from '../assets/ClubIcon.png';
 import { useNavigation } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import ToggleButton from '../Components/ToggleButton';
 import { DateTimePickerAndroid , DateTimePickerIOS } from '@react-native-community/datetimepicker';
+import moment from 'moment';
 
 const CheckoutScreen = () => {
   const navigation = useNavigation();
@@ -115,6 +117,17 @@ const CheckoutScreen = () => {
       openIOSDatePicker();
     }
   };
+  const getNextSevenDays = () => {
+    const today = moment().startOf('day');
+    const dates = [];
+  
+    for (let i = 0; i < 7; i++) {
+      const date = today.clone().add(i, 'days');
+      dates.push(date);
+    }
+  
+    return dates;
+  };
 
   return (
     <KeyboardAvoidingView
@@ -141,7 +154,7 @@ const CheckoutScreen = () => {
            
            
            <View>
-              <TouchableOpacity style={[styles.addressSection, { backgroundColor: '#CBEEBC' }]}>
+              <TouchableOpacity style={[styles.addressSection,{ backgroundColor: '#CBEEBC' }]} onPress={() => navigation.navigate('Address')}>
                 <View style={styles.addressRow}>
                   <Icon name="home" size={24} color="#757575" />
                   <Text style={styles.sectionTitle}>Delivery address</Text>
@@ -193,7 +206,7 @@ const CheckoutScreen = () => {
             </View>
           )}
 
-          <TouchableOpacity style={[styles.paymentSection, { backgroundColor: '#CBEEBC' }]}>
+          <TouchableOpacity style={[styles.paymentSection, { backgroundColor: '#CBEEBC' }]} onPress={() => navigation.navigate('Payment')}>
             <View style={styles.addressRow}>
               <Icon name="payment" size={24} color="#757575" />
               <Text style={styles.sectionTitle}>Payment Details</Text>
@@ -219,7 +232,7 @@ const CheckoutScreen = () => {
 
 
       <TouchableOpacity style={[styles.discountSection, { backgroundColor: '#CBEEBC' }]}>
-        <Icon name="add" size={24} color="#757575" />
+        <Ionicons name="pricetag" size={24} color="black" />
         <Text style={styles.sectionTitle}>Add Discount Code</Text>
       </TouchableOpacity>
 
@@ -273,17 +286,25 @@ const CheckoutScreen = () => {
         onRequestClose={closeTimeModal}
       >
         <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>
-              {modalType === 'delivery' ? 'Deliver Time' : 'Pick Up Time'}
-            </Text>
-            <View style={styles.modalDateSection}>
-            <TouchableOpacity onPress={handleDatePicker}>
-  <Text>
-    Selected Date: {selectedDate.toDateString()}
+        <View style={styles.modalContent}>
+  <Text style={styles.modalTitle}>
+    {modalType === 'delivery' ? 'Deliver Time' : 'Pick Up Time'}
   </Text>
-</TouchableOpacity>
-            </View>
+  <View style={styles.modalDateSection}>
+    <FlatList
+      data={getNextSevenDays()}
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      renderItem={({ item }) => (
+        <TouchableOpacity style={styles.dateCard}>
+          <Text style={styles.dateText}>
+            {item.format('ddd, MMM D')}
+          </Text>
+        </TouchableOpacity>
+      )}
+      keyExtractor={(item) => item.format('YYYYMMDD')}
+    />
+  </View>
             
 
 <View style={styles.modalTimeSlotSection}>
@@ -594,8 +615,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
+  dateCard: {
+    backgroundColor: '#CBEEBC',
+    padding: 8,
+    borderRadius: 4,
+    marginRight: 8,
+  },
+  dateText: {
+    fontWeight: 'bold',
+  },
 });
 
 export default CheckoutScreen;
+
 
 

@@ -10,6 +10,7 @@ import {
   Platform,
   StatusBar,
 } from "react-native";
+import { useNavigation } from '@react-navigation/native';
 import { AntDesign } from "@expo/vector-icons";
 import htc from "../assets/htc.jpeg";
 import ttp from "../assets/ttp.jpeg";
@@ -62,7 +63,7 @@ const CartScreen = () => {
     { id: "1", name: "Item name", image: htc, amount: "0.00", quantity: 1 },
     { id: "2", name: "Item name", image: ttp, amount: "0.00", quantity: 1 },
   ];
-
+  const navigation = useNavigation()
   return (
     <View style={styles.container}>
       <FlatList
@@ -78,7 +79,10 @@ const CartScreen = () => {
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.cartList}
       />
-      <TouchableOpacity style={styles.checkoutButton}>
+      <TouchableOpacity
+        style={styles.checkoutButton}
+        onPress={() => navigation.navigate('Checkout')}
+      >
         <Text style={styles.checkoutButtonText}>Checkout</Text>
       </TouchableOpacity>
     </View>

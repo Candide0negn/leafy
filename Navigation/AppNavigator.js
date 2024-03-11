@@ -11,6 +11,7 @@ import ClubScreen from "../MainScreens/ClubScreen";
 import PickUpScreen from "../MainScreens/PickUpScreen";
 import DetailsScreen from "../MainScreens/DetailsScreen";
 import CartScreen from "../MainScreens/CartScreen";
+import MapsScreen from "../MainScreens/MapsScreen" ;
 import { Entypo } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 const Stack = createStackNavigator();
@@ -38,7 +39,7 @@ const AppNavigator = () => {
     },
   };
   return (
-    <Stack.Navigator initialRouteName="Cart">
+    <Stack.Navigator initialRouteName="Maps">
       <Stack.Screen
         name="Checkout"
         component={CheckoutScreen}
@@ -82,8 +83,14 @@ const AppNavigator = () => {
         component={CartScreen}
         options={headerOptions}
       />
+      <Stack.Screen
+        name="Maps"
+        component={MapsScreen}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 };
 
 export default AppNavigator;
+

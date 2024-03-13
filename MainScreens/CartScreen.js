@@ -13,8 +13,8 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { AntDesign } from "@expo/vector-icons";
 //changed imports so niggas dont see bunch of weed on my screen at uni
-import htc from "../assets/ClubIcon.png";
-import ttp from "../assets/ClubIcon.png";
+import htc from "../assets/htc.jpeg";
+import ttp from "../assets/ttp.jpeg";
 import llp from "../assets/llp.jpeg";
 import { TextInput } from "react-native-gesture-handler";
 const CartItem = ({ name, image, amount, quantity }) => {

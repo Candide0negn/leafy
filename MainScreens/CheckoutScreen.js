@@ -133,6 +133,7 @@ const CheckoutScreen = () => {
   
     return dates;
   };
+  //fees calculation
   const calculateSubtotal = (cartItems) => {
     let subtotal = 0;
     cartItems.forEach((item) => {
@@ -144,6 +145,14 @@ const CheckoutScreen = () => {
     const total = cartItems.reduce((acc, item) => acc + item.quantity, 0);
     setTotalQuantity(total);
   }, [cartItems]);
+  const calculateTotal = (subtotal, deliveryFee) => {
+    return (parseFloat(subtotal) + parseFloat(deliveryFee)).toFixed(2);
+  };
+  const getDeliveryFee = () => {
+    // Replace this with the actual logic to calculate the delivery fee later
+    const fixedDeliveryFee = '2.00';
+    return fixedDeliveryFee;
+  };
 
   return (
     <KeyboardAvoidingView
@@ -271,12 +280,16 @@ const CheckoutScreen = () => {
           </View>
       <View style={[styles.DeliveryFeeSection]}>
         <Text style={[styles.subtotalText, { textAlign: 'left' }]}>Delivery Fee</Text>
-        <Text style={[styles.subtotalText, { textAlign: 'right' }]}>0.00$</Text>
+        <Text style={[styles.subtotalText, { textAlign: 'right' }]}>
+          ${getDeliveryFee()}
+        </Text>
       </View>
       <View style={[styles.totalsSection]}>
-        <Text style={[styles.totalText, { textAlign: 'right' }]}>Total</Text>
-        <Text style={[styles.totalText, { textAlign: 'right' }]}>0.00$</Text>
-      </View>
+  <Text style={[styles.totalText, { textAlign: 'right' }]}>Total</Text>
+  <Text style={[styles.totalText, { textAlign: 'right' }]}>
+    ${calculateTotal(calculateSubtotal(cartItems), getDeliveryFee())}
+  </Text>
+</View>
 
       <View style={styles.disclaimerRow}>
   <Text style={styles.disclaimerText}>

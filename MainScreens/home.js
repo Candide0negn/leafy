@@ -32,7 +32,7 @@ const newProductsData = [
   // Add more new product data as needed
 ];
 
-export default function App() {
+function Home() {
   useEffect(() => {
     // Preload images
     (async () => {
@@ -152,17 +152,17 @@ const styles = StyleSheet.create({
     minHeight: 195,
     marginHorizontal: 16,
     marginVertical: 8,
-    backgroundColor: 'rgba(255, 255, 255, 0.7)', // For glassy look with transparency
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
     paddingVertical: 20,
     paddingHorizontal: 20,
     borderRadius: 30,
-    elevation: 1, // Keep for Android compatibility
+    elevation: 1,
     shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 2 }, // Increased height for bottom-only shadow
-    shadowOpacity: 0.099, // Subtle effect
-    shadowRadius: 0.5, // Reduced spread
-    backdropFilter: 'blur(60px)', // Blur effect for glassy look (check compatibility)
-    border: '1px solid rgba(255, 255, 255, 0.18)', // Enhances the glass effect
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.099,
+    shadowRadius: 0.5,
+    backdropFilter: 'blur(60px)',
+    border: '1px solid rgba(255, 255, 255, 0.18)',
   },
   storeText: {
     fontSize: 20,
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
   categoryImage: {
     width: 55,
     height: 45,
-    resizeMode: 'contain', // Add this line to ensure images are properly sized
+    resizeMode: 'contain',
   },
   categoryText: {
     marginTop: 8,
@@ -256,3 +256,5 @@ const styles = StyleSheet.create({
     color: '#333333',
   },
 });
+
+export default Home;

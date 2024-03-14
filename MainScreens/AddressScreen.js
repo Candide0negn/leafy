@@ -10,8 +10,22 @@ import {
   StatusBar,
 } from "react-native";
 import { Ionicons, MaterialIcons, Entypo } from "@expo/vector-icons";
+import { useState, useEffect } from "react";
+import { db } from "../firebase";
+import {
+  collection,
+  query,
+  orderBy,
+  limit,
+  onSnapshot,
+} from "firebase/firestore";
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/firestore';
+
 const AddressScreen = ({ navigation }) => {
-  const addresses = [
+  const [currentAddress, setCurrentAddress] = useState(null);
+  const [recentAddresses, setRecentAddresses] = useState([]);
+ /* const addresses = [
     {
       id: "1",
       street: "Kurt-schumacher-straße 22",
@@ -32,27 +46,79 @@ const AddressScreen = ({ navigation }) => {
       street: "Kurt-schumacher-straße 8",
       zip: "67663 Kaiserslautern",
     },
-  ];
-
+    {
+      id: "5",
+      street: "Kurt-schumacher-straße 8.5",
+      zip: "67663 Kaiserslautern",
+    },
+  ]; */
+  const handleAddressPress = (address) => {
+    setCurrentAddress(address);
+  };
   const renderAddress = ({ item }) => (
-    <View style={styles.item}>
-      <View style={{ width: "9%" }}>
-        <Entypo name="location-pin" size={24} color="black" />
+    <TouchableOpacity onPress={() => handleAddressPress(item)}>
+      <View style={styles.item}>
+        <View style={{ width: "9%" }}>
+          <Entypo name="location-pin" size={24} color="black" />
+        </View>
+        <View style={styles.addressContainter}>
+          <View style={styles.address}>
+            <Text style={styles.addressText}>{item.street}</Text>
+            <Text style={styles.addressText}>{item.zip}</Text>
+          </View>
+        </View>
       </View>
-      <View style={styles.addressContainter}>
-        <TouchableOpacity style={styles.address}>
-          <Text style={styles.addressText}>{item.street}</Text>
-          <Text style={styles.addressText}>{item.zip}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.addressIcon}>
-          <MaterialIcons name="edit" size={20} color="black" />
-        </TouchableOpacity>
-      </View>
-    </View>
+    </TouchableOpacity>
   );
   const handleNewAddressPressed = () => {
     navigation.navigate("AddressForm");
   };
+  useEffect(() => {
+    const fetchCurrentAddress = async () => {
+      try {
+        const addressesCollection = collection(db, "addresses");
+        const q = query(
+          addressesCollection,
+          orderBy("createdAt", "desc"),
+          limit(1)
+        );
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
+          const addresses = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          if (addresses.length > 0) {
+            setCurrentAddress(addresses[0]);
+          }
+        });
+        return unsubscribe;
+      } catch (error) {
+        console.error("Error fetching current address:", error);
+      }
+    };
+
+    const fetchRecentAddresses = async () => {
+      try {
+        const addressesCollection = collection(db, 'addresses');
+        const q = query(addressesCollection, orderBy('createdAt', 'desc'), limit(5));
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
+          const addresses = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setRecentAddresses(addresses);
+        });
+        return unsubscribe;
+      } catch (error) {
+        console.error('Error fetching recent addresses:', error);
+      }
+    };
+
+    fetchCurrentAddress();
+    fetchRecentAddresses();
+  }, []);
+  
+  
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.deliveryAddress}>
@@ -60,12 +126,12 @@ const AddressScreen = ({ navigation }) => {
         <TouchableOpacity style={[styles.currentAddressButton]}>
           <View style={{ flex: 1 }}>
             <Text style={styles.currentAddressTitle}>Current Address</Text>
-            <Text style={styles.currentAddressText}>
-              Kurt-schumacher-straße 22, 67663 Kaiserslautern
-            </Text>
-          </View>
-          <View style={styles.editAddress}>
-            <MaterialIcons name="edit" size={24} color="black" />
+            {currentAddress && (
+              <Text style={styles.currentAddressText}>
+                {currentAddress.street}, {currentAddress.poBox},{" "}
+                {currentAddress.city}
+              </Text>
+            )}
           </View>
         </TouchableOpacity>
         <TouchableOpacity
@@ -73,7 +139,7 @@ const AddressScreen = ({ navigation }) => {
           onPress={handleNewAddressPressed}
         >
           <View style={{ flex: 1 }}>
-            <Text style={styles.currentAddressTitle}>New Address?</Text>
+            <Text style={styles.currentAddressTitle}>New Address</Text>
           </View>
           <View style={styles.editAddress}>
             <Entypo name="chevron-right" size={24} color="black" />
@@ -85,7 +151,7 @@ const AddressScreen = ({ navigation }) => {
       </View>
 
       <FlatList
-        data={addresses}
+        data={recentAddresses}
         renderItem={renderAddress}
         keyExtractor={(item) => item.id}
       />

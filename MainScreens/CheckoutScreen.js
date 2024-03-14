@@ -13,6 +13,7 @@ import CartItem from '../Components/CartItem';
 import QuantityBadge from '../Components/QuantityBadge';
 
 const CheckoutScreen = () => {
+  
   const navigation = useNavigation();
   const [isDelivery, setIsDelivery] = useState(true);
   const [isItemExpanded, setIsItemExpanded] = useState(false);
@@ -25,6 +26,7 @@ const CheckoutScreen = () => {
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
   const route = useRoute();
   const { cartItems } = route.params || {};
+  const { addressData } = route.params || {};
   const [totalQuantity, setTotalQuantity] = useState(0);
 
   const handleToggle = (value) => {
@@ -258,7 +260,7 @@ const CheckoutScreen = () => {
                     <QuantityBadge quantity={item.quantity} />
                     <Text style={{ marginLeft: 8 }}>{item.name}</Text>
                   </View>
-                  <Text>${item.amount}</Text>
+                  <Text>${(item.amount*item.quantity).toFixed(2)}</Text>
                 </View>
                 ))}
               </>
@@ -318,7 +320,7 @@ const CheckoutScreen = () => {
 
       <View style={[styles.orderButtonContainer, { backgroundColor: 'transparent', position: 'absolute', bottom: 0, left: 0, right: 0 }]}>
         <TouchableOpacity style={styles.orderButton}>
-          <Text style={styles.orderButtonText}>Order and Pay 0.00$</Text>
+          <Text style={styles.orderButtonText}>Order and Pay ${calculateTotal(calculateSubtotal(cartItems), getDeliveryFee())}</Text>
         </TouchableOpacity>
       </View>
       <Modal

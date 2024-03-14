@@ -33,6 +33,10 @@ const CartItem = ({
   deleteItem,
 }) => {
   const [itemQuantity, setItemQuantity] = useState(quantity);
+  const itemAmount = parseFloat(amount); // Convert amount to a float
+
+  // Calculate the total amount for the item
+  const totalAmount = itemAmount * itemQuantity;
 
   const handleIncreaseQuantity = () => {
     increaseQuantity(id);
@@ -73,7 +77,7 @@ const CartItem = ({
           </View>
           <View style={styles.itemDetails}>
             <Text style={styles.itemName}>{name}</Text>
-            <Text style={styles.itemPrice}>${amount}</Text>
+            <Text style={styles.itemPrice}>${totalAmount.toFixed(2)}</Text>
           </View>
           <View style={styles.quantityContainer}>
             <TouchableOpacity

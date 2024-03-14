@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, FlatList, Dimensions, Image } from 'react-native';
-import { Feather, Ionicons, FontAwesome } from '@expo/vector-icons';
+import { Feather, Ionicons, FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { Asset } from 'expo-asset';
 
 // Import optimized images
@@ -49,6 +49,9 @@ function Home() {
     <View style={styles.container}>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
         <View style={styles.header}>
+          <TouchableOpacity style={styles.menuButton}>
+            <MaterialIcons name="menu" size={24} color="#333" />
+          </TouchableOpacity>
           <Text style={styles.locationText} numberOfLines={1}>Kurt-Schu...</Text>
           <View style={styles.headerIcons}>
             <Feather name="search" size={24} color="#333" style={styles.icon} />
@@ -95,17 +98,7 @@ function Home() {
         />
       </ScrollView>
       <View style={styles.bottomNavBar}>
-        <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="home-outline" size={24} color="#333" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton}>
-          <Feather name="message-square" size={24} color="#333" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton}>
-          <Ionicons name="notifications-outline" size={24} color="#333" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton}>
-          <FontAwesome name="user-o" size={24} color="#333" />
+        
         </TouchableOpacity>
       </View>
     </View>
@@ -128,6 +121,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 12,
+  },
+  menuButton: {
+    marginRight: 8,
   },
   headerIcons: {
     flexDirection: 'row',

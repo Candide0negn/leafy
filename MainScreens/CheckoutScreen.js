@@ -1,18 +1,42 @@
-import React, { useState, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Switch, Image, Animated , Dimensions } from 'react-native';
+import React, { useState, useRef , useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Switch, Image, Animated , Dimensions , Modal , FlatList } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ClubIcon from '../assets/ClubIcon.png';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation , useRoute} from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
+import ToggleButton from '../Components/ToggleButton';
+import { DateTimePickerAndroid , DateTimePickerIOS } from '@react-native-community/datetimepicker';
+import moment from 'moment';
+import CartItem from '../Components/CartItem';
+import QuantityBadge from '../Components/QuantityBadge';
 
 const CheckoutScreen = () => {
+  
   const navigation = useNavigation();
   const [isDelivery, setIsDelivery] = useState(true);
   const [isItemExpanded, setIsItemExpanded] = useState(false);
   const [isSwitchEnabled, setIsSwitchEnabled] = useState(false);
   const screenWidth = Dimensions.get('window').width;
   const swipeAnim = useRef(new Animated.Value(0)).current;
+  const [showTimeModal, setShowTimeModal] = useState(false);
+  const [modalType, setModalType] = useState(null); // 'pickup' or 'delivery'
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
+  const route = useRoute();
+  const { cartItems } = route.params || {};
+  const { addressData } = route.params || {};
+  const [totalQuantity, setTotalQuantity] = useState(0);
+
+  const handleToggle = (value) => {
+    setIsDelivery(value === 'delivery');
+  };
+
+  const options = [
+    { label: 'Delivery', value: 'delivery' },
+    { label: 'Pick-up', value: 'pickup' },
+  ];
 
   const toggleDeliveryOption = () => {
     setIsDelivery(!isDelivery);
@@ -36,6 +60,101 @@ const CheckoutScreen = () => {
   const handlePickUpPress = () => {
     toggleDeliveryOption();
   };
+  const handleTimePress = (type) => {
+    setShowTimeModal(true);
+    setModalType(type);
+  };
+
+  const closeTimeModal = () => {
+    setShowTimeModal(false);
+    setModalType(null);
+  };
+
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+  };
+
+  const handleTimeSlotChange = (timeSlot) => {
+    setSelectedTimeSlot(timeSlot);
+  };
+
+  const availableTimeSlots = [
+    '09:00 - 09:30', '09:30 - 10:00', '10:00 - 10:30', '10:30 - 11:00',
+    '11:00 - 11:30', '11:30 - 12:00', '12:00 - 12:30', '12:30 - 13:00',
+    '13:00 - 13:30', '13:30 - 14:00', '14:00 - 14:30', '14:30 - 15:00',
+    '15:00 - 15:30', '15:30 - 16:00', '16:00 - 16:30', '16:30 - 17:00',
+    '17:00 - 17:30', '17:30 - 18:00', '18:00 - 18:30', '18:30 - 19:00',
+    '19:00 - 19:30', '19:30 - 20:00', '20:00 - 20:30', '20:30 - 21:00',
+    '21:00 - 21:30', '21:30 - 22:00', '22:00 - 22:30', '22:30 - 23:00',
+  ];
+  const openDatePicker = async () => {
+    try {
+      const { action, year, month, day } = await DateTimePickerAndroid.open({
+        value: selectedDate,
+        mode: 'date',
+        display: 'spinner',
+      });
+  
+      if (action !== DateTimePicker.dismissedAction) {
+        const newDate = new Date(year, month, day);
+        setSelectedDate(newDate);
+      }
+    } catch (error) {
+      console.warn('Cannot open date picker', error);
+    }
+  };
+  
+  const openIOSDatePicker = () => {
+    DateTimePickerIOS.open({
+      value: selectedDate,
+      mode: 'date',
+      display: 'spinner',
+      onChange: (event, date) => {
+        if (date !== undefined) {
+          setSelectedDate(date);
+        }
+      },
+    });
+  };
+  
+  const handleDatePicker = () => {
+    if (Platform.OS === 'android') {
+      openDatePicker();
+    } else {
+      openIOSDatePicker();
+    }
+  };
+  const getNextSevenDays = () => {
+    const today = moment().startOf('day');
+    const dates = [];
+  
+    for (let i = 0; i < 7; i++) {
+      const date = today.clone().add(i, 'days');
+      dates.push(date);
+    }
+  
+    return dates;
+  };
+  //fees calculation
+  const calculateSubtotal = (cartItems) => {
+    let subtotal = 0;
+    cartItems.forEach((item) => {
+      subtotal += parseFloat(item.amount) * item.quantity;
+    });
+    return subtotal.toFixed(2);
+  };
+  useEffect(() => {
+    const total = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+    setTotalQuantity(total);
+  }, [cartItems]);
+  const calculateTotal = (subtotal, deliveryFee) => {
+    return (parseFloat(subtotal) + parseFloat(deliveryFee)).toFixed(2);
+  };
+  const getDeliveryFee = () => {
+    // Replace this with the actual logic to calculate the delivery fee later
+    const fixedDeliveryFee = '2.00';
+    return fixedDeliveryFee;
+  };
 
   return (
     <KeyboardAvoidingView
@@ -52,50 +171,13 @@ const CheckoutScreen = () => {
         ]}
       >
         <ScrollView>
-          <View style={styles.header}>
-            <Text style={[styles.headerText, { fontSize: 24, fontWeight: 'bold', marginTop: 40 }]}>Checkout</Text>
-          </View>
-
-          <View style={[styles.deliveryOptions, { backgroundColor: '#CBEEBC' }]}>
-            <TouchableOpacity
-              style={[
-                styles.deliveryButton,
-                isDelivery ? styles.activeButton : styles.inactiveButton,
-              ]}
-              onPress={toggleDeliveryOption}
-            >
-              <Text
-                style={[
-                  styles.deliveryButtonText,
-                  isDelivery ? styles.activeButtonText : styles.inactiveButtonText,
-                ]}
-              >
-                Delivery
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.deliveryButton,
-                !isDelivery ? styles.activeButton : styles.inactiveButton,
-              ]}
-              onPress={handlePickUpPress}
-            >
-              <Text
-                style={[
-                  styles.deliveryButtonText,
-                  !isDelivery ? styles.activeButtonText : styles.inactiveButtonText,
-                ]}
-              >
-                Pick-up
-              </Text>
-            </TouchableOpacity>
-          </View>
+          <ToggleButton options={options} onToggle={handleToggle} />
 
           {isDelivery && (
            
            
            <View>
-              <TouchableOpacity style={[styles.addressSection, { backgroundColor: '#CBEEBC' }]}>
+              <TouchableOpacity style={[styles.addressSection,{ backgroundColor: '#CBEEBC' }]} onPress={() => navigation.navigate('Address')}>
                 <View style={styles.addressRow}>
                   <Icon name="home" size={24} color="#757575" />
                   <Text style={styles.sectionTitle}>Delivery address</Text>
@@ -107,7 +189,10 @@ const CheckoutScreen = () => {
                 <Text>12345 City, BIN</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={[styles.timeSection, { backgroundColor: '#CBEEBC' }]}>
+              <TouchableOpacity
+                style={[styles.timeSection, { backgroundColor: '#CBEEBC' }]}
+                onPress={() => handleTimePress('delivery')}
+              >
                 <View style={styles.addressRow}>
                   <Icon name="access-time" size={24} color="#757575" />
                   <Text style={styles.sectionTitle}>Deliver Time</Text>
@@ -131,7 +216,10 @@ const CheckoutScreen = () => {
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.paymentSection, { backgroundColor: '#CBEEBC' }]}>
+              <TouchableOpacity
+                style={[styles.paymentSection, { backgroundColor: '#CBEEBC' }]}
+                onPress={() => handleTimePress('pickup')}
+              >
                 <View style={styles.addressRow}>
                   <Feather name="package" size={24} color="black" />
                   <Text style={styles.sectionTitle}>Pick Up Time</Text>
@@ -141,7 +229,7 @@ const CheckoutScreen = () => {
             </View>
           )}
 
-          <TouchableOpacity style={[styles.paymentSection, { backgroundColor: '#CBEEBC' }]}>
+          <TouchableOpacity style={[styles.paymentSection, { backgroundColor: '#CBEEBC' }]} onPress={() => navigation.navigate('Payment')}>
             <View style={styles.addressRow}>
               <Icon name="payment" size={24} color="#757575" />
               <Text style={styles.sectionTitle}>Payment Details</Text>
@@ -149,40 +237,61 @@ const CheckoutScreen = () => {
             </View>
           </TouchableOpacity>
           <Text style={styles.ItemsectionTitle}>Your Items</Text>
-      <TouchableOpacity style={[styles.itemSection, { backgroundColor: '#CBEEBC' }]} onPress={toggleItemSection}>
-  <View style={styles.cardHeader}>
-  <Image source={ClubIcon} style={styles.leftIcon}/>
-    <Text style={styles.cardHeaderText}>Social Club's Name</Text>
-  </View>
-  <Text style={styles.ItemCount} >1 item</Text>
-  <TouchableOpacity style={styles.iconPosition} onPress={toggleItemSection}>
-    <Icon name={isItemExpanded ? 'expand-less' : 'expand-more'} size={24} color="#757575" />
-  </TouchableOpacity>
-  {isItemExpanded && (
-    <>
-      <Text>nothing yet</Text>
-    </>
-  )}
-</TouchableOpacity>
+          <TouchableOpacity style={[styles.itemSection, { backgroundColor: '#CBEEBC' }]} onPress={toggleItemSection}>
+            <View style={styles.cardHeader}>
+              <Image source={ClubIcon} style={styles.leftIcon} />
+              <Text style={styles.cardHeaderText}>Social Club's Name</Text>
+            </View>
+            <View style={styles.TotalItemsContainer}>
+              <QuantityBadge quantity={totalQuantity} />
+              <Text >items</Text>
+            </View>
+              <TouchableOpacity
+                style={styles.iconPosition}
+                onPress={toggleItemSection}
+              >
+              <Icon name={isItemExpanded ? 'expand-less' : 'expand-more'} size={24} color="#757575" />
+            </TouchableOpacity>
+            {isItemExpanded && (
+              <>
+                {cartItems && cartItems.map((item) => (
+                  <View key={item.id} style={styles.itemDetailsContainer}>
+                  <View style={styles.itemDetails}>
+                    <QuantityBadge quantity={item.quantity} />
+                    <Text style={{ marginLeft: 8 }}>{item.name}</Text>
+                  </View>
+                  <Text>${(item.amount*item.quantity).toFixed(2)}</Text>
+                </View>
+                ))}
+              </>
+            )}
+          </TouchableOpacity>
 
 
-      <TouchableOpacity style={[styles.discountSection, { backgroundColor: '#CBEEBC' }]}>
-        <Icon name="add" size={24} color="#757575" />
+      <TouchableOpacity style={[styles.discountSection, { backgroundColor: '#CBEEBC' }]} onPress={() => navigation.navigate('Discount')}>
+        <Ionicons name="pricetag" size={24} color="black" />
         <Text style={styles.sectionTitle}>Add Discount Code</Text>
+        <Icon name="chevron-right" size={24} color="#757575" />
       </TouchableOpacity>
 
       <View style={[styles.subtotalsSection]}>
-        <Text style={[styles.subtotalText, { textAlign: 'left' }]}>Subtotal</Text>
-        <Text style={[styles.subtotalText, { textAlign: 'right' }]}>0.00$</Text>
-      </View>
+            <Text style={[styles.subtotalText, { textAlign: 'left' }]}>Subtotal</Text>
+            <Text style={[styles.subtotalText, { textAlign: 'right' }]}>
+              ${calculateSubtotal(cartItems)}
+            </Text>
+          </View>
       <View style={[styles.DeliveryFeeSection]}>
         <Text style={[styles.subtotalText, { textAlign: 'left' }]}>Delivery Fee</Text>
-        <Text style={[styles.subtotalText, { textAlign: 'right' }]}>0.00$</Text>
+        <Text style={[styles.subtotalText, { textAlign: 'right' }]}>
+          ${getDeliveryFee()}
+        </Text>
       </View>
       <View style={[styles.totalsSection]}>
-        <Text style={[styles.totalText, { textAlign: 'right' }]}>Total</Text>
-        <Text style={[styles.totalText, { textAlign: 'right' }]}>0.00$</Text>
-      </View>
+  <Text style={[styles.totalText, { textAlign: 'right' }]}>Total</Text>
+  <Text style={[styles.totalText, { textAlign: 'right' }]}>
+    ${calculateTotal(calculateSubtotal(cartItems), getDeliveryFee())}
+  </Text>
+</View>
 
       <View style={styles.disclaimerRow}>
   <Text style={styles.disclaimerText}>
@@ -211,9 +320,73 @@ const CheckoutScreen = () => {
 
       <View style={[styles.orderButtonContainer, { backgroundColor: 'transparent', position: 'absolute', bottom: 0, left: 0, right: 0 }]}>
         <TouchableOpacity style={styles.orderButton}>
-          <Text style={styles.orderButtonText}>Order and Pay 0.00$</Text>
+          <Text style={styles.orderButtonText}>Order and Pay ${calculateTotal(calculateSubtotal(cartItems), getDeliveryFee())}</Text>
         </TouchableOpacity>
       </View>
+      <Modal
+        visible={showTimeModal}
+        transparent
+        animationType="fade"
+        onRequestClose={closeTimeModal}
+      >
+        <View style={styles.modalContainer}>
+        <View style={styles.modalContent}>
+  <Text style={styles.modalTitle}>
+    {modalType === 'delivery' ? 'Deliver Time' : 'Pick Up Time'}
+  </Text>
+  <View style={styles.modalDateSection}>
+    <FlatList
+      data={getNextSevenDays()}
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      renderItem={({ item }) => (
+        <TouchableOpacity style={styles.dateCard}>
+          <Text style={styles.dateText}>
+            {item.format('ddd, MMM D')}
+          </Text>
+        </TouchableOpacity>
+      )}
+      keyExtractor={(item) => item.format('YYYYMMDD')}
+    />
+  </View>
+            
+
+<View style={styles.modalTimeSlotSection}>
+  <FlatList
+    data={availableTimeSlots}
+    numColumns={1} // Set to 1 for vertical scrolling
+    renderItem={({ item }) => (
+      <TouchableOpacity
+        style={[
+          styles.timeSlotButton,
+          selectedTimeSlot === item && styles.selectedTimeSlot,
+        ]}
+        onPress={() => handleTimeSlotChange(item)}
+      >
+        <Text style={styles.timeSlotText}>{item}</Text>
+      </TouchableOpacity>
+    )}
+    keyExtractor={(item) => item}
+  />
+</View>
+
+            <View style={styles.modalButtonsRow}>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.cancelButton]}
+                onPress={closeTimeModal}
+              >
+                <Text style={styles.modalButtonText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.saveButton]}
+                onPress={closeTimeModal}
+              >
+                <Text style={styles.modalButtonText}>Save</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </KeyboardAvoidingView>
   );
 };
@@ -381,12 +554,6 @@ const styles = StyleSheet.create({
   cardHeaderText: {
     flex: 1, // Allows the text to fill the space, pushing the icon to the right
   },
-  ItemCount: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginLeft : 48,
-  },
   iconPosition: {
     position: 'absolute',
     right: 10, // Adjust according to your layout
@@ -426,7 +593,93 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     borderRadius: 4,
   },
-  
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 16,
+    borderRadius: 8,
+    width: '80%',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 16,
+  },
+  modalDateSection: {
+    marginBottom: 16,
+  },
+  modalTimeSlotSection: {
+    height: 300, // Adjust this value to fit 6 time slots
+    marginBottom: 16,
+  },
+  timeSlotButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 4,
+    backgroundColor: '#CBEEBC',
+    marginRight: 8,
+  },
+  selectedTimeSlot: {
+    backgroundColor: '#6FCF97',
+  },
+  timeSlotText: {
+    color: 'black',
+    fontWeight: 'bold',
+  },
+  modalButtonsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  modalButton: {
+    flex: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 4,
+    marginHorizontal: 8,
+  },
+  cancelButton: {
+    backgroundColor: '#CBEEBC',
+  },
+  saveButton: {
+    backgroundColor: '#6FCF97',
+  },
+  modalButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  dateCard: {
+    backgroundColor: '#CBEEBC',
+    padding: 8,
+    borderRadius: 4,
+    marginRight: 8,
+  },
+  dateText: {
+    fontWeight: 'bold',
+  },
+  TotalItemsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 48,
+  },
+  itemDetailsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginVertical: 4,
+  },
+  itemDetails: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
 });
 
 export default CheckoutScreen;
+
+
+

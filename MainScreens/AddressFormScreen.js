@@ -8,20 +8,45 @@ import {
   Platform,
   StatusBar,
 } from "react-native";
+import { db } from '../firebase'; // Import the Firestore instance
+import { collection, addDoc, query, orderBy, limit, onSnapshot } from 'firebase/firestore'; 
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/firestore';
+import { useNavigation } from '@react-navigation/native'; // Add useNavigation import
 
 const AddressFormScreen = () => {
   const [form, setForm] = useState({
-    fullName: "",
-    street: "",
-    city: "",
-    poBox: "",
-    floor: "",
-    phone: "",
+    fullName: '',
+    street: '',
+    city: '',
+    poBox: '',
+    floor: '',
+    phone: '',
   });
 
-  const handleSave = () => {
-    // Handle the save action
+  const handleSave = async () => {
+    try {
+      const addressesCollection = collection(db, 'addresses');
+      await addDoc(addressesCollection, {
+        fullName: form.fullName,
+        street: form.street,
+        city: form.city,
+        poBox: form.poBox,
+        floor: form.floor,
+        phone: form.phone,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+      // Clear the form or show a success message
+
+      // Add navigation to AddressScreen after saving
+      navigation.navigate('Address');
+
+    } catch (error) {
+      console.error('Error saving address:', error);
+      // Show an error message
+    }
   };
+  const navigation = useNavigation();
 
   return (
     <View style={styles.container}>
@@ -77,7 +102,7 @@ const AddressFormScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#91C66A",
+    backgroundColor: "#ACD48E",
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
     paddingHorizontal: 20,
   },

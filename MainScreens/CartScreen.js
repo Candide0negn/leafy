@@ -9,61 +9,100 @@ import {
   FlatList,
   Platform,
   StatusBar,
+  Animated,
+  Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { AntDesign } from "@expo/vector-icons";
-//changed imports so niggas dont see bunch of weed on my screen at uni
+import { AntDesign, Ionicons } from "@expo/vector-icons";
 import htc from "../assets/htc.jpeg";
 import ttp from "../assets/ttp.jpeg";
 import llp from "../assets/llp.jpeg";
-import { TextInput } from "react-native-gesture-handler";
-const CartItem = ({ name, image, amount, quantity }) => {
+import { TextInput, RectButton } from "react-native-gesture-handler";
+import * as Animatable from "react-native-animatable";
+import Swipeable from "react-native-gesture-handler/Swipeable";
+import { EvilIcons } from '@expo/vector-icons';
+
+const CartItem = ({
+  id,
+  name,
+  image,
+  amount,
+  quantity,
+  increaseQuantity,
+  decreaseQuantity,
+  deleteItem,
+}) => {
   const [itemQuantity, setItemQuantity] = useState(quantity);
 
-  const increaseQuantity = () => {
+  const handleIncreaseQuantity = () => {
+    increaseQuantity(id);
     setItemQuantity((prevQuantity) => prevQuantity + 1);
   };
 
-  const decreaseQuantity = () => {
+  const handleDecreaseQuantity = () => {
     if (itemQuantity > 1) {
+      decreaseQuantity(id);
       setItemQuantity((prevQuantity) => prevQuantity - 1);
     }
   };
 
+  const renderRightActions = (progress, dragX) => {
+    const scale = dragX.interpolate({
+      inputRange: [-100, 0],
+      outputRange: [1, 0],
+      extrapolate: "clamp",
+    });
+
+    return (
+      <RectButton onPress={() => deleteItem(id)}>
+        <Animated.View
+          style={[styles.rightAction, { transform: [{ scale }] }]}
+        >
+          <EvilIcons name="trash" size={40} color="black" />
+        </Animated.View>
+      </RectButton>
+    );
+  };
+
   return (
-    <View style={styles.cartItem}>
-      <View style={styles.imagePlaceholder}>
-        <Image source={image} style={styles.image} />
-      </View>
-      <View style={styles.itemDetails}>
-        <Text style={styles.itemName}>{name}</Text>
-        <Text style={styles.itemPrice}>${amount}</Text>
-      </View>
-      <View style={styles.quantityContainer}>
-        <TouchableOpacity
-          onPress={decreaseQuantity}
-          style={styles.changeQuantityButton}
-        >
-          <AntDesign name="minus" size={18} color="black" />
-        </TouchableOpacity>
-        <Text style={styles.quantityText}>{itemQuantity}g</Text>
-        <TouchableOpacity
-          onPress={increaseQuantity}
-          style={styles.changeQuantityButton}
-        >
-          <AntDesign name="plus" size={18} color="black" />
-        </TouchableOpacity>
-      </View>
-    </View>
+    <Animatable.View animation="fadeInRightBig">
+      <Swipeable renderRightActions={renderRightActions}>
+        <View style={styles.cartItem}>
+          <View style={styles.imagePlaceholder}>
+            <Image source={image} style={styles.image} />
+          </View>
+          <View style={styles.itemDetails}>
+            <Text style={styles.itemName}>{name}</Text>
+            <Text style={styles.itemPrice}>${amount}</Text>
+          </View>
+          <View style={styles.quantityContainer}>
+            <TouchableOpacity
+              onPress={handleDecreaseQuantity}
+              style={styles.changeQuantityButton}
+            >
+              <AntDesign name="minus" size={18} color="black" />
+            </TouchableOpacity>
+            <Text style={styles.quantityText}>{itemQuantity}g</Text>
+            <TouchableOpacity
+              onPress={handleIncreaseQuantity}
+              style={styles.changeQuantityButton}
+            >
+              <AntDesign name="plus" size={18} color="black" />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Swipeable>
+    </Animatable.View>
   );
 };
 
 const CartScreen = () => {
   const [subtotal, setSubTotal] = useState(0);
-  const cartItems = [
-    { id: "1", name: "Item name", image: htc, amount: "0.00", quantity: 1 },
-    { id: "2", name: "Item name", image: ttp, amount: "1.00", quantity: 1 },
-  ];
+  const [cartItems, setCartItems] = useState([
+    { id: "1", name: "Item name", image: htc, amount: "10.00", quantity: 1 },
+    { id: "2", name: "Item name", image: ttp, amount: "10.00", quantity: 1 },
+  ]);
+
   const calculateSubtotal = () => {
     let subtotal = 0;
     cartItems.forEach((item) => {
@@ -72,19 +111,65 @@ const CartScreen = () => {
     return subtotal.toFixed(2);
   };
 
+  const increaseQuantity = (itemId) => {
+    setCartItems((prevCartItems) =>
+      prevCartItems.map((item) =>
+        item.id === itemId ? { ...item, quantity: item.quantity + 1 } : item
+      )
+    );
+  };
+
+  const decreaseQuantity = (itemId) => {
+    setCartItems((prevCartItems) =>
+      prevCartItems.map((item) =>
+        item.id === itemId && item.quantity > 1
+          ? { ...item, quantity: item.quantity - 1 }
+          : item
+      )
+    );
+  };
+
+  const deleteItem = (itemId) => {
+    Alert.alert(
+      "Delete Item",
+      "Are you sure you want to delete this item?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "OK",
+          onPress: () => {
+            setCartItems((prevCartItems) =>
+              prevCartItems.filter((item) => item.id !== itemId)
+            );
+          },
+          style: "destructive",
+        },
+      ]
+    );
+  };
+
+  const renderItem = ({ item }) => (
+    <CartItem
+      id={item.id}
+      name={item.name}
+      image={item.image}
+      amount={item.amount}
+      quantity={item.quantity}
+      increaseQuantity={increaseQuantity}
+      decreaseQuantity={decreaseQuantity}
+      deleteItem={deleteItem}
+    />
+  );
   const navigation = useNavigation();
+
   return (
     <View style={styles.container}>
       <FlatList
         data={cartItems}
-        renderItem={({ item }) => (
-          <CartItem
-            name={item.name}
-            image={item.image}
-            amount={item.amount}
-            quantity={item.quantity}
-          />
-        )}
+        renderItem={renderItem}
         keyExtractor={(item) => item.id}
         ListFooterComponent={() => (
           <View style={styles.subtotalRow}>
@@ -192,6 +277,13 @@ const styles = StyleSheet.create({
   subtotalAmount: {
     fontSize: 18,
     fontWeight: "bold",
+  },
+  rightAction: {
+    backgroundColor: "#DFF0D8",
+    justifyContent: "center",
+    alignItems: "center",
+    flex: 1,
+    padding: 20,
   },
 });
 

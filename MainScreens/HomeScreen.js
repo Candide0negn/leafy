@@ -32,7 +32,7 @@ const newProductsData = [
   // Add more new product data as needed
 ];
 
-export default function App() {
+export default function HomeScreen() {
   useEffect(() => {
     // Preload images
     (async () => {

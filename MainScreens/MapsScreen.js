@@ -1,58 +1,114 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, View, PermissionsAndroid } from "react-native";
-import MapView, { PROVIDER_GOOGLE, Marker } from "react-native-maps";
-import Geolocation from "react-native-geolocation-service";
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, Text, PermissionsAndroid } from 'react-native';
+import MapView, { Marker, Callout } from 'react-native-maps';
+import Geolocation from 'react-native-geolocation-service';
 
 const MapsScreen = () => {
-  const [initialRegion, setInitialRegion] = useState(null);
+  const [currentPosition, setCurrentPosition] = useState(null);
+  const [establishments, setEstablishments] = useState([]);
+  const [filters, setFilters] = useState([]);
 
   useEffect(() => {
-    requestLocationPermission();
+    getCurrentPosition();
+    fetchEstablishments();
   }, []);
 
+  const getCurrentPosition = async () => {
+    const hasPermission = await requestLocationPermission();
+    if (hasPermission && Geolocation) {
+      Geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setCurrentPosition({ latitude, longitude });
+        },
+        (error) => {
+          console.log(error);
+        },
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+      );
+    } else {
+      console.log('Location permission denied');
+    }
+  };
+
+  const fetchEstablishments = async () => {
+    if (currentPosition) {
+      try {
+        const response = await fetch(
+          `https://overpass-api.de/api/interpreter?data=[out:json];node[amenity](around:10000,${currentPosition.latitude},${currentPosition.longitude});out;`
+        );
+        const data = await response.json();
+        setEstablishments(data.elements);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+
+  const filterEstablishments = () => {
+    // Add your filter logic here
+  };
+
+  const sortByDistance = () => {
+    // Add your sorting logic here
+  };
   const requestLocationPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         {
-          title: "Location Access Required",
-          message: "This app needs to access your location",
+          title: 'Location Permission',
+          message: 'This app needs access to your location to display on the map.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
         }
       );
-
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        Geolocation.getCurrentPosition(
-          (position) => {
-            const { latitude, longitude } = position.coords;
-            setInitialRegion({
-              latitude,
-              longitude,
-              latitudeDelta: 0.0922,
-              longitudeDelta: 0.0421,
-            });
-          },
-          (error) => console.log(error),
-          { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-        );
+        console.log('Location permission granted');
+        return true;
       } else {
-        console.log("Location permission denied");
+        console.log('Location permission denied');
+        return false;
       }
     } catch (err) {
       console.warn(err);
+      return false;
     }
   };
-
-  return initialRegion ? (
+  return (
     <View style={styles.container}>
+    {currentPosition ? (
       <MapView
-        provider={PROVIDER_GOOGLE}
         style={styles.map}
-        region={initialRegion}
+        initialRegion={{
+          latitude: currentPosition.latitude,
+          longitude: currentPosition.longitude,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        }}
       >
-        <Marker coordinate={initialRegion} />
+        <Marker coordinate={currentPosition} title="Your Location" />
+        {establishments.map((establishment, index) => (
+          <Marker
+            key={index}
+            coordinate={{
+              latitude: establishment.lat,
+              longitude: establishment.lon,
+            }}
+            title={establishment.tags.name}
+          >
+            <Callout>
+              <Text>{establishment.tags.amenity}</Text>
+            </Callout>
+          </Marker>
+        ))}
       </MapView>
-    </View>
-  ) : null;
+    ) : (
+      <Text>Loading...</Text>
+    )}
+  </View>
+  );
 };
 
 const styles = StyleSheet.create({

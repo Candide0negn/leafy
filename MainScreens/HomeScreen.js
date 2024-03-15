@@ -1,7 +1,17 @@
-import React, { useEffect } from 'react';
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, FlatList, Dimensions, Image } from 'react-native';
-import { Feather, Ionicons, FontAwesome, MaterialIcons } from '@expo/vector-icons';
+import React, { useState, useEffect } from 'react';
+import {
+  StyleSheet,
+  Text, // Import Text component
+  View,
+  ScrollView,
+  TouchableOpacity,
+  FlatList,
+  Dimensions,
+  Image,
+} from 'react-native';
+import { Feather, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Asset } from 'expo-asset';
+import Drawer from './MainScreens/Drawer';
 
 // Import optimized images
 import foodImage from './assets/bud.png';
@@ -45,16 +55,20 @@ function Home() {
     })();
   }, []);
 
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
   return (
     <View style={styles.container}>
+      <Drawer isOpen={drawerOpen} />
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
         <View style={styles.header}>
-          <TouchableOpacity style={styles.menuButton}>
+          <TouchableOpacity style={styles.menuButton} onPress={() => setDrawerOpen(!drawerOpen)}>
             <MaterialIcons name="menu" size={24} color="#333" />
           </TouchableOpacity>
-          <Text style={styles.locationText} numberOfLines={1}>Kurt-Schu...</Text>
+          <Text style={styles.locationText} numberOfLines={1}>
+            Kurt-Schu...
+          </Text>
           <View style={styles.headerIcons}>
-            <Feather name="search" size={24} color="#333" style={styles.icon} />
             <Feather name="shopping-cart" size={24} color="#333" style={styles.icon} />
           </View>
         </View>
@@ -77,7 +91,7 @@ function Home() {
           renderItem={({ item }) => (
             <View style={styles.categoryContainer}>
               <View style={styles.categoryCard}>
-                <Image source={item.image} style={styles.categoryImage} lazy={true} />
+                <Image source={item.image} style={styles.categoryImage} />
               </View>
               <Text style={styles.categoryText}>{item.name}</Text>
             </View>
@@ -98,7 +112,17 @@ function Home() {
         />
       </ScrollView>
       <View style={styles.bottomNavBar}>
-        
+        <TouchableOpacity style={styles.navButton}>
+          <Ionicons name="home-outline" size={24} color="#333" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navButton}>
+          <Feather name="message-square" size={24} color="#333" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navButton}>
+          <Ionicons name="notifications-outline" size={24} color="#333" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navButton}>
+          <Feather name="search" size={24} color="#333" />
         </TouchableOpacity>
       </View>
     </View>
@@ -246,10 +270,6 @@ const styles = StyleSheet.create({
   },
   navButton: {
     padding: 10,
-  },
-  navIcon: {
-    fontSize: 28,
-    color: '#333333',
   },
 });
 

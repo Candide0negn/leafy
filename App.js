@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
-  Text,
+  Text, // Import Text component
   View,
   ScrollView,
   TouchableOpacity,
@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { Feather, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Asset } from 'expo-asset';
+import Drawer from './MainScreens/Drawer';
 
 // Import optimized images
 import foodImage from './assets/bud.png';
@@ -54,11 +55,14 @@ function Home() {
     })();
   }, []);
 
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
   return (
     <View style={styles.container}>
+      <Drawer isOpen={drawerOpen} />
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
         <View style={styles.header}>
-          <TouchableOpacity style={styles.menuButton}>
+          <TouchableOpacity style={styles.menuButton} onPress={() => setDrawerOpen(!drawerOpen)}>
             <MaterialIcons name="menu" size={24} color="#333" />
           </TouchableOpacity>
           <Text style={styles.locationText} numberOfLines={1}>

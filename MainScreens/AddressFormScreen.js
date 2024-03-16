@@ -45,7 +45,7 @@ const AddressFormScreen = () => {
         phone: form.phone,
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       });
-      
+
       navigation.navigate("Address");
     } catch (error) {
       console.error("Error saving address:", error);
@@ -56,8 +56,11 @@ const AddressFormScreen = () => {
 
   return (
     <View style={styles.container}>
-      <KeyboardAvoidingView behavior="height">
-        <ScrollView>
+      <KeyboardAvoidingView behavior="padding">
+        <ScrollView
+          keyboardShouldPersistTaps="always"
+          showsVerticalScrollIndicator={false}
+        >
           <Text style={styles.formTitle}>Fill in the form</Text>
           <View style={styles.form}>
             <TextInput
@@ -150,7 +153,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     paddingVertical: 16,
     alignItems: "center",
-    marginTop:100
+    // marginTop:100
   },
   saveButtonText: {
     fontSize: 24,

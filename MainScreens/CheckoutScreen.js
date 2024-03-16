@@ -12,6 +12,7 @@ import moment from 'moment';
 import CartItem from '../Components/CartItem';
 import QuantityBadge from '../Components/QuantityBadge';
 
+
 const CheckoutScreen = () => {
   
   const navigation = useNavigation();
@@ -26,7 +27,6 @@ const CheckoutScreen = () => {
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
   const route = useRoute();
   const { cartItems } = route.params || {};
-  const { addressData } = route.params || {};
   const [totalQuantity, setTotalQuantity] = useState(0);
 
   const handleToggle = (value) => {

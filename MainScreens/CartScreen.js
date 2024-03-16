@@ -12,7 +12,7 @@ import {
   Animated,
   Alert,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import htc from "../assets/htc.jpeg";
 import ttp from "../assets/ttp.jpeg";

@@ -11,13 +11,13 @@ import {
 } from 'react-native';
 import { Feather, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Asset } from 'expo-asset';
-import Drawer from './MainScreens/Drawer';
+import Drawer from "./Drawer";
 
 // Import optimized images
-import foodImage from './assets/bud.png';
-import electronicsImage from './assets/bong.png';
-import groceriesImage from './assets/weed1.png';
-import booksImage from './assets/new.png';
+import foodImage from '../assets/bud.png';
+import electronicsImage from '../assets/bong.png';
+import groceriesImage from '../assets/weed1.png';
+import booksImage from '../assets/new.png';
 
 const { width } = Dimensions.get('window');
 

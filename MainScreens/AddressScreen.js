@@ -19,13 +19,13 @@ import {
   limit,
   onSnapshot,
 } from "firebase/firestore";
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/firestore';
+import firebase from "firebase/compat/app";
+import "firebase/compat/firestore";
 
 const AddressScreen = ({ navigation }) => {
   const [currentAddress, setCurrentAddress] = useState(null);
   const [recentAddresses, setRecentAddresses] = useState([]);
- /* const addresses = [
+  /* const addresses = [
     {
       id: "1",
       street: "Kurt-schumacher-straße 22",
@@ -99,8 +99,12 @@ const AddressScreen = ({ navigation }) => {
 
     const fetchRecentAddresses = async () => {
       try {
-        const addressesCollection = collection(db, 'addresses');
-        const q = query(addressesCollection, orderBy('createdAt', 'desc'), limit(5));
+        const addressesCollection = collection(db, "addresses");
+        const q = query(
+          addressesCollection,
+          orderBy("createdAt", "desc"),
+          limit(5)
+        );
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
           const addresses = querySnapshot.docs.map((doc) => ({
             id: doc.id,
@@ -110,20 +114,19 @@ const AddressScreen = ({ navigation }) => {
         });
         return unsubscribe;
       } catch (error) {
-        console.error('Error fetching recent addresses:', error);
+        console.error("Error fetching recent addresses:", error);
       }
     };
 
     fetchCurrentAddress();
     fetchRecentAddresses();
   }, []);
-  
-  
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.deliveryAddress}>
         <Text style={styles.addressTitle}>Delivery address</Text>
-        <TouchableOpacity style={[styles.currentAddressButton]}>
+        <View style={[styles.currentAddressButton, { opacity: 0.65 }]}>
           <View style={{ flex: 1 }}>
             <Text style={styles.currentAddressTitle}>Current Address</Text>
             {currentAddress && (
@@ -133,7 +136,7 @@ const AddressScreen = ({ navigation }) => {
               </Text>
             )}
           </View>
-        </TouchableOpacity>
+        </View>
         <TouchableOpacity
           style={[styles.currentAddressButton, { elevation: 10 }]}
           onPress={handleNewAddressPressed}
@@ -174,9 +177,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: "#000",
     fontWeight: "800",
-  },
-  deliveryAddress: {
-    //padding: 16,
   },
   addressTitle: {
     fontSize: 18,
@@ -234,7 +234,6 @@ const styles = StyleSheet.create({
   addressContainter: {
     flex: 1,
     flexDirection: "row",
-    //backgroundColor: "red",
     borderBottomColor: "grey",
     borderBottomWidth: 1,
     alignItems: "center",

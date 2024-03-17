@@ -7,26 +7,35 @@ import {
   StyleSheet,
   Platform,
   StatusBar,
+  KeyboardAvoidingView,
+  ScrollView,
 } from "react-native";
-import { db } from '../firebase'; // Import the Firestore instance
-import { collection, addDoc, query, orderBy, limit, onSnapshot } from 'firebase/firestore'; 
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/firestore';
-import { useNavigation } from '@react-navigation/native'; // Add useNavigation import
+import { db } from "../firebase"; // Import the Firestore instance
+import {
+  collection,
+  addDoc,
+  query,
+  orderBy,
+  limit,
+  onSnapshot,
+} from "firebase/firestore";
+import firebase from "firebase/compat/app";
+import "firebase/compat/firestore";
+import { useNavigation } from "@react-navigation/native"; // Add useNavigation import
 
 const AddressFormScreen = () => {
   const [form, setForm] = useState({
-    fullName: '',
-    street: '',
-    city: '',
-    poBox: '',
-    floor: '',
-    phone: '',
+    fullName: "",
+    street: "",
+    city: "",
+    poBox: "",
+    floor: "",
+    phone: "",
   });
 
   const handleSave = async () => {
     try {
-      const addressesCollection = collection(db, 'addresses');
+      const addressesCollection = collection(db, "addresses");
       await addDoc(addressesCollection, {
         fullName: form.fullName,
         street: form.street,
@@ -36,13 +45,10 @@ const AddressFormScreen = () => {
         phone: form.phone,
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       });
-      // Clear the form or show a success message
 
-      // Add navigation to AddressScreen after saving
-      navigation.navigate('Address');
-
+      navigation.navigate("Address");
     } catch (error) {
-      console.error('Error saving address:', error);
+      console.error("Error saving address:", error);
       // Show an error message
     }
   };
@@ -50,48 +56,55 @@ const AddressFormScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.formTitle}>Fill in the form</Text>
-      <View style={styles.form}>
-        <TextInput
-          style={styles.input}
-          placeholder="Full Name"
-          value={form.fullName}
-          onChangeText={(text) => setForm({ ...form, fullName: text })}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Street and house number"
-          value={form.street}
-          onChangeText={(text) => setForm({ ...form, street: text })}
-        />
-        <View style={styles.row}>
-          <TextInput
-            style={[styles.inputHalf]}
-            placeholder="City"
-            value={form.city}
-            onChangeText={(text) => setForm({ ...form, city: text })}
-          />
-          <TextInput
-            style={[styles.inputHalf]}
-            placeholder="PO Box"
-            value={form.poBox}
-            onChangeText={(text) => setForm({ ...form, poBox: text })}
-          />
-        </View>
-        <TextInput
-          style={styles.input}
-          placeholder="Floor number (optional)"
-          value={form.floor}
-          onChangeText={(text) => setForm({ ...form, floor: text })}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Phone number"
-          value={form.phone}
-          onChangeText={(text) => setForm({ ...form, phone: text })}
-          keyboardType="phone-pad"
-        />
-      </View>
+      <KeyboardAvoidingView behavior="padding">
+        <ScrollView
+          keyboardShouldPersistTaps="always"
+          showsVerticalScrollIndicator={false}
+        >
+          <Text style={styles.formTitle}>Fill in the form</Text>
+          <View style={styles.form}>
+            <TextInput
+              style={styles.input}
+              placeholder="Full Name"
+              value={form.fullName}
+              onChangeText={(text) => setForm({ ...form, fullName: text })}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Street and house number"
+              value={form.street}
+              onChangeText={(text) => setForm({ ...form, street: text })}
+            />
+            <View style={styles.row}>
+              <TextInput
+                style={[styles.inputHalf]}
+                placeholder="City"
+                value={form.city}
+                onChangeText={(text) => setForm({ ...form, city: text })}
+              />
+              <TextInput
+                style={[styles.inputHalf]}
+                placeholder="PO Box"
+                value={form.poBox}
+                onChangeText={(text) => setForm({ ...form, poBox: text })}
+              />
+            </View>
+            <TextInput
+              style={styles.input}
+              placeholder="Floor number (optional)"
+              value={form.floor}
+              onChangeText={(text) => setForm({ ...form, floor: text })}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Phone number"
+              value={form.phone}
+              onChangeText={(text) => setForm({ ...form, phone: text })}
+              keyboardType="phone-pad"
+            />
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
       <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
         <Text style={styles.saveButtonText}>Save</Text>
       </TouchableOpacity>
@@ -140,7 +153,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     paddingVertical: 16,
     alignItems: "center",
-    marginBottom: 50,
+    // marginTop:100
   },
   saveButtonText: {
     fontSize: 24,

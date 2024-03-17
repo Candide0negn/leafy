@@ -110,6 +110,7 @@ const AppNavigator = () => {
         options={{
           ...headerOptions,
           headerTitle: "",
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         }}
       />
       <Stack.Screen

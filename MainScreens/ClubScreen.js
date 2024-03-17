@@ -141,7 +141,7 @@ const ClubCard = ({ club, openModal }) => {
   );
 };
 
-const ClubScreen = () => {
+const ClubScreen = ({navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [radiusModalVisible, setRadiusModalVisible] = useState(false);
   const [selectedClub, setSelectedClub] = useState({
@@ -304,7 +304,10 @@ const ClubScreen = () => {
                         <Text>{selectedClub.amount} / 500</Text>
                       </View>
                     </View>
-                    <TouchableOpacity style={styles.membershipButton}>
+                    <TouchableOpacity
+                      style={styles.membershipButton}
+                      onPress={() => navigation.navigate("Home")}
+                    >
                       <Text style={styles.membershipButtonText}>
                         Mitglied Werden
                       </Text>
@@ -373,7 +376,7 @@ const ClubScreen = () => {
         <TouchableWithoutFeedback onPress={handleClose}>
           <View style={[styles.modalOverlay, { justifyContent: "center" }]}>
             <View style={styles.modalView}>
-              <Text style={{marginBottom:10}}>Umkreis: {radius} km</Text>
+              <Text style={{ marginBottom: 10 }}>Umkreis: {radius} km</Text>
               <Slider
                 style={{ width: 200, height: 40 }}
                 minimumValue={0}
@@ -574,7 +577,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-
   },
 });
 

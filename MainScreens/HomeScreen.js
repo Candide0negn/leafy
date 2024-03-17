@@ -12,7 +12,7 @@ import {
 import { Feather, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Asset } from 'expo-asset';
 import Drawer from '../Components/Drawer'; // Import the Drawer component
-
+import { useOrder } from "../context/OrderContext";
 // Import optimized images
 import foodImage from '../assets/bud.png';
 import electronicsImage from '../assets/bong.png';

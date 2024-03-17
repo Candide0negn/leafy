@@ -11,13 +11,13 @@ import {
 } from 'react-native';
 import { Feather, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Asset } from 'expo-asset';
-import Drawer from './MainScreens/Drawer'; // Import the Drawer component
+import Drawer from '../Components/Drawer'; // Import the Drawer component
 
 // Import optimized images
-import foodImage from './assets/bud.png';
-import electronicsImage from './assets/bong.png';
-import groceriesImage from './assets/weed1.png';
-import booksImage from './assets/new.png';
+import foodImage from '../assets/bud.png';
+import electronicsImage from '../assets/bong.png';
+import groceriesImage from '../assets/weed1.png';
+import booksImage from '../assets/new.png';
 
 const { width } = Dimensions.get("window");
 
@@ -25,7 +25,6 @@ const storeData = [
   { id: "1", name: "Store 1" },
   { id: "2", name: "Store 2" },
   { id: "3", name: "Store 3" },
-  // Add more store data as needed
 ];
 
 const categoryData = [
@@ -33,7 +32,6 @@ const categoryData = [
   { id: "2", name: "Accessories", image: electronicsImage },
   { id: "3", name: "Pre-Rolls", image: groceriesImage },
   { id: "4", name: "New Arrivals", image: booksImage },
-  // Add more category data as needed
 ];
 
 const newProductsData = [

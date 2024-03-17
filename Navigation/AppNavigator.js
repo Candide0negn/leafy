@@ -11,7 +11,7 @@ import ClubScreen from "../MainScreens/ClubScreen";
 import PickUpScreen from "../MainScreens/PickUpScreen";
 import DetailsScreen from "../MainScreens/DetailsScreen";
 import CartScreen from "../MainScreens/CartScreen";
-import MapsScreen from "../MainScreens/MapsScreen" ;
+import MapsScreen from "../MainScreens/MapsScreen";
 import { Entypo } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import PaymentDetails from "../MainScreens/PaymentDetails";
@@ -29,7 +29,7 @@ const AppNavigator = () => {
       marginLeft: -25,
     },
     headerStyle: {
-      backgroundColor: "#DFF0D8",
+      backgroundColor: "#91C66A",
       shadowColor: "transparent",
     },
     headerLeft: () => (
@@ -42,11 +42,14 @@ const AppNavigator = () => {
     },
   };
   return (
-    <Stack.Navigator initialRouteName="Home">
+    <Stack.Navigator initialRouteName="Club">
       <Stack.Screen
         name="Checkout"
         component={CheckoutScreen}
-        options={headerOptions}
+        options={{
+          ...headerOptions,
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
       />
       <Stack.Screen
         name="PickUp"
@@ -74,7 +77,10 @@ const AppNavigator = () => {
       <Stack.Screen
         name="Club"
         component={ClubScreen}
-        options={headerOptions}
+        options={{
+          ...headerOptions,
+          headerTitle: "",
+        }}
       />
       <Stack.Screen
         name="Details"
@@ -111,4 +117,3 @@ const AppNavigator = () => {
 };
 
 export default AppNavigator;
-

@@ -11,17 +11,14 @@ import {
   StatusBar,
   Animated,
   Alert,
+  SafeAreaView,
 } from "react-native";
-import { useNavigation, useRoute } from "@react-navigation/native";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import htc from "../assets/htc.jpeg";
 import ttp from "../assets/ttp.jpeg";
 import llp from "../assets/llp.jpeg";
-import { TextInput, RectButton } from "react-native-gesture-handler";
 import * as Animatable from "react-native-animatable";
-import Swipeable from "react-native-gesture-handler/Swipeable";
-import { EvilIcons } from '@expo/vector-icons';
-
+import { useOrder } from "../context/OrderContext";
 const CartItem = ({
   id,
   name,
@@ -30,7 +27,6 @@ const CartItem = ({
   quantity,
   increaseQuantity,
   decreaseQuantity,
-  deleteItem,
 }) => {
   const [itemQuantity, setItemQuantity] = useState(quantity);
   const itemAmount = parseFloat(amount); // Convert amount to a float
@@ -50,57 +46,38 @@ const CartItem = ({
     }
   };
 
-  const renderRightActions = (progress, dragX) => {
-    const scale = dragX.interpolate({
-      inputRange: [-100, 0],
-      outputRange: [1, 0],
-      extrapolate: "clamp",
-    });
-
-    return (
-      <RectButton onPress={() => deleteItem(id)}>
-        <Animated.View
-          style={[styles.rightAction, { transform: [{ scale }] }]}
-        >
-          <EvilIcons name="trash" size={40} color="black" />
-        </Animated.View>
-      </RectButton>
-    );
-  };
-
   return (
     <Animatable.View animation="fadeInRightBig">
-      <Swipeable renderRightActions={renderRightActions}>
-        <View style={styles.cartItem}>
-          <View style={styles.imagePlaceholder}>
-            <Image source={image} style={styles.image} />
-          </View>
-          <View style={styles.itemDetails}>
-            <Text style={styles.itemName}>{name}</Text>
-            <Text style={styles.itemPrice}>${totalAmount.toFixed(2)}</Text>
-          </View>
-          <View style={styles.quantityContainer}>
-            <TouchableOpacity
-              onPress={handleDecreaseQuantity}
-              style={styles.changeQuantityButton}
-            >
-              <AntDesign name="minus" size={18} color="black" />
-            </TouchableOpacity>
-            <Text style={styles.quantityText}>{itemQuantity}g</Text>
-            <TouchableOpacity
-              onPress={handleIncreaseQuantity}
-              style={styles.changeQuantityButton}
-            >
-              <AntDesign name="plus" size={18} color="black" />
-            </TouchableOpacity>
-          </View>
+      <View style={styles.cartItem}>
+        <View style={styles.imagePlaceholder}>
+          <Image source={image} style={styles.image} />
         </View>
-      </Swipeable>
+        <View style={styles.itemDetails}>
+          <Text style={styles.itemName}>{name}</Text>
+          <Text style={styles.itemPrice}>${totalAmount.toFixed(2)}</Text>
+        </View>
+        <View style={styles.quantityContainer}>
+          <TouchableOpacity
+            onPress={handleDecreaseQuantity}
+            style={styles.changeQuantityButton}
+          >
+            <AntDesign name="minus" size={18} color="black" />
+          </TouchableOpacity>
+          <Text style={styles.quantityText}>{itemQuantity}g</Text>
+          <TouchableOpacity
+            onPress={handleIncreaseQuantity}
+            style={styles.changeQuantityButton}
+          >
+            <AntDesign name="plus" size={18} color="black" />
+          </TouchableOpacity>
+        </View>
+      </View>
     </Animatable.View>
   );
 };
 
-const CartScreen = () => {
+const CartScreen = ({ navigation }) => {
+  const { orderDetails } = useOrder();
   const [subtotal, setSubTotal] = useState(0);
   const [cartItems, setCartItems] = useState([
     { id: "1", name: "Item name", image: htc, amount: "10.00", quantity: 1 },
@@ -133,28 +110,6 @@ const CartScreen = () => {
     );
   };
 
-  const deleteItem = (itemId) => {
-    Alert.alert(
-      "Delete Item",
-      "Are you sure you want to delete this item?",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "OK",
-          onPress: () => {
-            setCartItems((prevCartItems) =>
-              prevCartItems.filter((item) => item.id !== itemId)
-            );
-          },
-          style: "destructive",
-        },
-      ]
-    );
-  };
-
   const renderItem = ({ item }) => (
     <CartItem
       id={item.id}
@@ -164,13 +119,11 @@ const CartScreen = () => {
       quantity={item.quantity}
       increaseQuantity={increaseQuantity}
       decreaseQuantity={decreaseQuantity}
-      deleteItem={deleteItem}
     />
   );
-  const navigation = useNavigation();
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <FlatList
         data={cartItems}
         renderItem={renderItem}
@@ -189,7 +142,7 @@ const CartScreen = () => {
       >
         <Text style={styles.checkoutButtonText}>Checkout</Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 };
 

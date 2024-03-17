@@ -8,10 +8,10 @@ import {
   FlatList,
   Dimensions,
   Image,
-  Animated,
 } from 'react-native';
 import { Feather, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Asset } from 'expo-asset';
+import Drawer from './MainScreens/Drawer'; // Import the Drawer component
 
 // Import optimized images
 import foodImage from './assets/bud.png';
@@ -41,35 +41,6 @@ const newProductsData = [
   { id: '2', name: 'Product 2' },
   // Add more new product data as needed
 ];
-
-const Drawer = ({ isOpen, onClose }) => {
-  const [animatedValue] = useState(new Animated.Value(isOpen ? 0 : -width * 0.8));
-
-  useEffect(() => {
-    Animated.timing(animatedValue, {
-      toValue: isOpen ? 0 : -width * 0.8,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-  }, [isOpen, animatedValue]);
-
-  return (
-    <Animated.View
-      style={[
-        styles.drawerContainer,
-        {
-          transform: [{ translateX: animatedValue }],
-        },
-      ]}
-    >
-      <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-        <MaterialIcons name="close" size={24} color="#333" />
-      </TouchableOpacity>
-      {/* Drawer content goes here */}
-      <Text style={styles.drawerText}>This is the drawer content.</Text>
-    </Animated.View>
-  );
-};
 
 function Home() {
   useEffect(() => {
@@ -303,32 +274,6 @@ const styles = StyleSheet.create({
   },
   navButton: {
     padding: 10,
-  },
-  drawerContainer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    width: width * 0.8,
-    backgroundColor: 'white',
-    elevation: 8,
-    shadowColor: '#000',
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 0 },
-    zIndex: 1,
-  },
-  closeButton: {
-    position: 'absolute',
-    top: 20,
-    right: 20,
-    zIndex: 2,
-  },
-  drawerText: {
-    marginTop: 60,
-    marginLeft: 20,
-    fontSize: 18,
-    color: '#333333',
   },
 });
 

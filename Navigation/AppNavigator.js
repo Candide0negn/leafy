@@ -42,7 +42,7 @@ const AppNavigator = () => {
     },
   };
   return (
-    <Stack.Navigator initialRouteName="Club">
+    <Stack.Navigator initialRouteName="Home">
       <Stack.Screen
         name="Checkout"
         component={CheckoutScreen}

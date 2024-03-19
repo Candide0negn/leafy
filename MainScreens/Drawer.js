@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, TouchableOpacity, Animated, Dimensions, Text, Image } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  Animated,
+  Dimensions,
+  Text,
+  Image,
+} from 'react-native';
 import { MaterialIcons, Ionicons, FontAwesome, EvilIcons, Entypo } from '@expo/vector-icons';
 import smile from '../assets/smile.png';
 
@@ -17,7 +25,7 @@ const Drawer = ({ isOpen, onClose }) => {
   }, [isOpen, animatedValue]);
 
   const headerHeight = height * 0.12;
-  const buttonHeight = height * 0.07;
+  const buttonHeight = height * 0.1;
   const menuHeight = height * 0.55;
   const bottomHeight = height * 0.15;
 
@@ -120,6 +128,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 12,
     backgroundColor: '#f7f7f7',
+    
   },
   headerImage: {
     width: 40,
@@ -154,18 +163,19 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: '#fff',
     paddingHorizontal: 18,
-    paddingVertical: 10,
+    paddingVertical: 16,
     borderRadius: 4,
     borderWidth: 1,
     borderColor: '#dcdcdc',
   },
-  createAccountButton: {
-    backgroundColor: '#1a1a1a',
-  },
   buttonText: {
-    fontSize: 14,
+    fontSize: 18,
+    fontWeight: 'bold',
     color: '#333',
     textAlign: 'center',
+  },
+  createAccountButton: {
+    backgroundColor: '#1a1a1a',
   },
   menuContainer: {
     padding: 16,

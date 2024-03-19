@@ -1,4 +1,4 @@
-import React from "react";
+/*import React from "react";
 import {
   View,
   Text,
@@ -52,7 +52,7 @@ const AddressScreen = ({ navigation }) => {
       zip: "67663 Kaiserslautern",
     },
   ]; */
-  const handleAddressPress = (address) => {
+  /*const handleAddressPress = (address) => {
     setCurrentAddress(address);
   };
   const renderAddress = ({ item }) => (
@@ -241,4 +241,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddressScreen;
+export default AddressScreen;*/

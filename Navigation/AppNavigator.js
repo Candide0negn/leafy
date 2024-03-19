@@ -13,36 +13,66 @@ import DetailsScreen from "../MainScreens/DetailsScreen";
 import CartScreen from "../MainScreens/CartScreen";
 import MapsScreen from "../MainScreens/MapsScreen";
 import { Entypo } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useNavigationState } from "@react-navigation/native";
 import PaymentDetails from "../MainScreens/PaymentDetails";
 import DiscountScreen from "../MainScreens/DiscountScreen";
 import HomeScreen from "../MainScreens/HomeScreen";
+import LocationScreen from "../MainScreens/location";
+import LoginScreen from "../MainScreens/WalkthroughScreen";
+import SignUpScreen from "../MainScreens/SignUpScreen";
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
   const navigation = useNavigation();
+
   const headerOptions = {
     headerTitleAlign: "center",
     headerTitleStyle: {
       fontWeight: "900",
-      fontSize: 24,
+      fontSize: 32,
       marginLeft: -25,
     },
     headerStyle: {
       backgroundColor: "#91C66A",
       shadowColor: "transparent",
     },
-    headerLeft: () => (
-      <TouchableOpacity onPress={() => navigation.goBack()}>
-        <Entypo name="chevron-left" size={30} color="black" />
-      </TouchableOpacity>
-    ),
+    headerLeft: () =>
+      navigation.canGoBack() ? (
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Entypo name="chevron-left" size={30} color="black" />
+        </TouchableOpacity>
+      ) : null,
     headerLeftContainerStyle: {
       paddingLeft: 20,
     },
   };
   return (
-    <Stack.Navigator initialRouteName="Home">
+    <Stack.Navigator initialRouteName="Walkthrough">
+      <Stack.Screen
+        name="location"
+        component={LocationScreen}
+        options={{
+          ...headerOptions,
+          headerTitle: "",
+        }}
+      />
+      <Stack.Screen
+        name="SignUp"
+        component={SignUpScreen}
+        options={{
+          ...headerOptions,
+          headerTitle: "Create account",
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
+      <Stack.Screen
+        name="login"
+        component={LoginScreen}
+        options={{
+          ...headerOptions,
+          headerTitle: "",
+        }}
+      />
       <Stack.Screen
         name="Checkout"
         component={CheckoutScreen}
@@ -80,6 +110,7 @@ const AppNavigator = () => {
         options={{
           ...headerOptions,
           headerTitle: "",
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         }}
       />
       <Stack.Screen

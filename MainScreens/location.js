@@ -1,15 +1,15 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 
-const LocationScreen = () => {
+const LocationScreen = ({navigation}) => {
   return (
     <View style={styles.container}>
       <Text style={styles.headingText}>We need your Location</Text>
       <Text style={styles.descriptionText}>
         Leafly needs your location to find the best deals in your area
       </Text>
-      <Image source={require('./assets/walking.png')} style={styles.imageStyle} />
-      <TouchableOpacity style={styles.continueButton}>
+      <Image source={require('../assets/walking.png')} style={styles.imageStyle} />
+      <TouchableOpacity style={styles.continueButton} onPress={()=>navigation.navigate("login")}>
         <Text style={styles.continueButtonText}>Continue</Text>
       </TouchableOpacity>
     </View>
@@ -19,7 +19,7 @@ const LocationScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#EBF5E3',
+    backgroundColor: '#91C66A',
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 20,
